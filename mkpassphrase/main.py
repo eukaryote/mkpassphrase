@@ -25,6 +25,8 @@ def main(argv=None):
     parser.add_argument('--non-ascii', action='store_false',
                         dest='ascii', default=True,
                         help='Whether to allow words with non-ascii letters')
+    parser.add_argument('-p', '--pad', metavar='PAD', default='',
+                        help='Pad passphrase using PAD as prefix and suffix')
 
     args = parser.parse_args()
     if args.min > args.max:
@@ -39,7 +41,7 @@ def main(argv=None):
 
     passphrase, num_candidates = M.mk_passphrase(
         path=args.word_file, min=args.min, max=args.max,
-        num_words=args.num_words, random_case=args.random_case)
+        num_words=args.num_words, random_case=args.random_case, pad=args.pad)
     possibilities = M.num_possible(num_candidates, args.num_words)
 
     print(passphrase)
