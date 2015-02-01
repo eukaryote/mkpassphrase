@@ -54,16 +54,15 @@ def mk_passphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
 
 
 def num_possible(num_candidates, num_words):
-    assert num_words >= 0
-    assert num_candidates >= 0
-    if num_candidates == 0:
-        return 0
-    elif num_words == 0:
-        return 1
+    if num_candidates < 1:
+        raise ValueError('num_candidates must be positive')
+    if num_words < 1:
+        raise ValueError('num_words must be positive')
+
     n, k = num_candidates, num_words
-    total = n
-    while k > 1:
+    possible = 1
+    while k > 0:
+        possible *= n
         n -= 1
-        total *= n
         k -= 1
-    return total
+    return possible
