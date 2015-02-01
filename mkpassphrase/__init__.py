@@ -2,7 +2,7 @@
 Utility methods for generating passphrases from a dictionary file of words.
 """
 
-__version_info = (0, 2)
+__version_info = (0, 3)
 __version__ = '.'.join(map(str, __version_info))
 
 import random
@@ -24,11 +24,11 @@ except ImportError:
 
 
 # defaults
-MIN = 3       # min word length
-MAX = 7       # max word length
-WORDS = 4     # num words
-PAD = ''      # prefix/suffix of passphrase
-DELIM = u' '  # delimiter
+MIN = 3        # min word length
+MAX = 7        # max word length
+WORDS = 4      # num words
+PAD = ''       # prefix/suffix of passphrase
+DELIM = u(' ')  # delimiter
 WORD_FILE = '/usr/share/dict/words'
 
 

@@ -37,7 +37,7 @@ def test_get_words_lowercased(word_file):
 
 def test_get_words_nonascii(word_file):
     words = M.get_words(word_file, ascii=False)
-    assert u'quúux' in words
+    assert M.u('quúux') in words
 
 
 def test_get_words_min_default(word_file):
