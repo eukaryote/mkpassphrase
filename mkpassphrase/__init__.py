@@ -13,6 +13,7 @@ import re
 MIN = 3    # min word length
 MAX = 7    # max word length
 WORDS = 4  # num words
+PAD = ''   # prefix/suffix of passphrase
 WORD_FILE = '/usr/share/dict/words'
 
 
@@ -44,9 +45,10 @@ def sample_words(all_words, num_words, random_case=True):
 
 
 def mk_passphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
-                  random_case=True, ascii=True):
+                  random_case=True, ascii=True, pad=PAD):
     all_words = get_words(path, min=min, max=max)
     passphrase = sample_words(all_words, num_words, random_case=random_case)
+    passphrase = pad + passphrase + pad
     num_candidates = len(all_words)
     if random_case:
         num_candidates *= 2
