@@ -13,9 +13,8 @@ from tests import test_words
 
 
 def verify_get_words(path, verifier, msg,
-                     min=M.MIN, max=M.MAX, ascii=True, sorted=False):
-    for word in M.get_words(path, min=min, max=max, ascii=ascii,
-                            sorted=sorted):
+                     min=M.MIN, max=M.MAX, ascii=True):
+    for word in M.get_words(path, min=min, max=max, ascii=ascii):
         assert verifier(word), msg % word
 
 
