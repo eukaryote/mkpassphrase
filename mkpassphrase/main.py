@@ -42,7 +42,7 @@ def main(argv=None):
         parser.exit("word file does not exist or is not readable: %s" %
                     args.word_file)
 
-    passphrase, num_candidates = M.mk_passphrase(
+    passphrase, num_candidates = M.mkpassphrase(
         path=args.word_file,
         min=args.min,
         max=args.max,

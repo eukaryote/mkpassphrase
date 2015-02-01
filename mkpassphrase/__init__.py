@@ -103,8 +103,8 @@ def sample_words(all_words, k, delim=DELIM, random_case=True):
     return delim.join(words)
 
 
-def mk_passphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
-                  random_case=True, ascii=True, delim=DELIM, pad=PAD):
+def mkpassphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
+                 random_case=True, ascii=True, delim=DELIM, pad=PAD):
     """
     Make a passphrase using given params.
 
@@ -132,6 +132,7 @@ def mk_passphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
                          " or equal to 'min'")
     if num_words < 1:
         raise ValueError("'num_words' must be at least 1")
+
     all_words = get_words(path, min=min, max=max, ascii=ascii)
     passphrase = sample_words(all_words, num_words, delim=delim,
                               random_case=random_case)
