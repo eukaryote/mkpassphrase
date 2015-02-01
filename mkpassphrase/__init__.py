@@ -1,5 +1,5 @@
 """
-Utilities for generating passphrases from a dictionary file of words.
+Utility methods for generating passphrases from a dictionary file of words.
 """
 
 __version__ = '0.1'
