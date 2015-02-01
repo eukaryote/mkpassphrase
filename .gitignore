@@ -1,4 +1,7 @@
 build
 dist
-mkpassphrase.egg-info
 *.pyc
+*.egg
+*.egg-info
+.cache
+.tox
