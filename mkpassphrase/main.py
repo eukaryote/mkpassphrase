@@ -9,13 +9,13 @@ def main(argv=None):
     if argv is None:
         argv = sys.argv
     parser = argparse.ArgumentParser(description='Generate a passphrase.')
-    parser.add_argument('--num-words', type=int, metavar='NUM_WORDS',
+    parser.add_argument('-n', '--num-words', type=int, metavar='NUM_WORDS',
                         help='Number of words in passphrase', default=M.WORDS)
     parser.add_argument('--min', type=int, metavar='MIN',
                         help='Minimum word length', default=M.MIN)
     parser.add_argument('--max', type=int, metavar='MAX',
                         help='Maximum word length', default=M.MAX)
-    parser.add_argument('--word-file', type=str, metavar='WORD_FILE',
+    parser.add_argument('-f', '--word-file', type=str, metavar='WORD_FILE',
                         help='Word file path (one word per line)',
                         default=M.WORD_FILE)
     parser.add_argument('--no-random-case', action='store_false',
