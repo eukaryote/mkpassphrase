@@ -4,9 +4,22 @@ Utility methods for generating passphrases from a dictionary file of words.
 
 __version__ = '0.1'
 
-import string
 import random
 import re
+import unicodedata
+
+try:
+    unicode
+except NameError:
+    u = lambda s: s
+else:
+    u = lambda s: unicode(s)
+
+
+try:
+    from itertools import imap
+except ImportError:
+    imap = map
 
 
 # defaults
@@ -17,18 +30,36 @@ PAD = ''   # prefix/suffix of passphrase
 WORD_FILE = '/usr/share/dict/words'
 
 
-def mk_word_pat(min=MIN, max=MAX, ascii=True):
-    # string.letters will include non-ascii letters if locale includes them
-    char_class = '[a-zA-Z]' if ascii else '[' + string.letters + ']'
-    regex = '^{char_class}{{{min},{max}}}$'.format(**locals())
-    return re.compile(regex)
+def is_unicode_letter(char):
+    """ Answer whether given unicode character is a letter."""
+    return unicodedata.category(char) in ('Ll', 'Lu')
+
+
+def mk_word_matcher(min=MIN, max=MAX, ascii=True):
+    if max < min:
+        msg = "min '%s' should be less than or equal to max '%s'"
+        raise ValueError(msg % (min, max))
+    if ascii:
+        pat = re.compile('^[a-zA-Z]{%s,%s}$' % (min, max))
+
+        def matcher(word):
+            return bool(pat.match(word))
+    else:
+
+        def matcher(word):
+            length = len(word)
+            return (length >= min and length <= max and
+                    all(imap(is_unicode_letter, word)))
+    return matcher
 
 
 def get_words(path, min=MIN, max=MAX, ascii=True, sorted=False):
-    pat = mk_word_pat(min=min, max=max, ascii=ascii)
+    matcher = mk_word_matcher(min=min, max=max, ascii=ascii)
     with open(path) as f:
         words = (line.strip().lower() for line in f)
-        words = list(set(filter(pat.match, words)))
+        if not ascii:
+            words = (u(w) for w in words)
+        words = list(filter(matcher, set(words)))
     if sorted:
         words.sort()
     return words
