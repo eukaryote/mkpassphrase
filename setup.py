@@ -33,6 +33,7 @@ setup(
         ' generating natural-language passphrases by sampling from a large'
         ' dictionary file containing one word per line, yielding a passphrase'
         ' like "Snack cachets Duds Corey".'),
+    keywords='passphrase password',
     author='Calvin Smith',
     author_email='sapientdust+mkpassphrase@gmail.com',
     packages=[mkpassphrase.__name__],
