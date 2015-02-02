@@ -37,7 +37,7 @@ setup(
     packages=[mkpassphrase.__name__],
     platforms='any',
     cmdclass={'test': PyTest},
-    tests_require=['pytest', 'mock'],
+    tests_require=['pytest'],
     test_suite='tests',
     entry_points={
         'console_scripts': [
