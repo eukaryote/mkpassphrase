@@ -6,12 +6,11 @@
 passphrases by concatenating words chosen from a dictionary file that
 contains one word per line.
 
-# Installation
+# Installation (stable version from pypi)
 
 ```console
-git clone https://github.com/eukaryote/mkpassphrase.git
-cd mkpassphrase
-pip install --user --upgrade .
+# user install to ~/.local/bin on *nix
+pip install --user --upgrade mkpassphrase
 ```
 
 # Usage
