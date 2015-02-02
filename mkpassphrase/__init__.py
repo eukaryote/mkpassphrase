@@ -2,7 +2,7 @@
 Utility methods for generating passphrases from a dictionary file of words.
 """
 
-__version_info = (0, 5)
+__version_info = (0, 5, 0)
 __version__ = '.'.join(map(str, __version_info))
 
 import random
