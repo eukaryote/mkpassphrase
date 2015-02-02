@@ -26,6 +26,7 @@ setup(
     name=mkpassphrase.__name__,
     version=mkpassphrase.__version__,
     license='http://www.opensource.org/licenses/mit-license.php',
+    url='https://github.com/eukaryote/mkpassphrase',
     description='Word-based passphrase generator',
     long_description='''A commandline script and an associated package for
     generating natural-language passphrases by sampling from a large
@@ -43,9 +44,6 @@ setup(
             '{name} = {name}.main:main'.format(name=mkpassphrase.__name__),
         ]
     },
-    # extras_require={
-    #     'testing': ['pytest', 'mock'],
-    # },
     classifiers=[
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
