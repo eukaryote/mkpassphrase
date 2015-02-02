@@ -18,9 +18,6 @@ class PyTest(test):
         errcode = pytest.main(self.test_args)
         sys.exit(errcode)
 
-kw = {}
-if sys.version_info >= (3,):
-    kw['use_2to3'] = True
 
 setup(
     name=mkpassphrase.__name__,
@@ -55,5 +52,4 @@ setup(
         'Topic :: Security',
         'Topic :: Utilities'
     ],
-    **kw
 )
