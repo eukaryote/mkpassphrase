@@ -18,10 +18,11 @@ def main(argv=None):
     parser.add_argument('-f', '--word-file', type=str, metavar='WORD_FILE',
                         help='Word file path (one word per line)',
                         default=M.WORD_FILE)
-    parser.add_argument('--no-random-case', action='store_false',
-                        dest='random_case', default=True,
-                        help='Whether to randomly capitalize '
-                             'the first letter of each word')
+    parser.add_argument('--lowercase', action='store_true',
+                        dest='lowercase', default=False,
+                        help='Make each word entirely lowercase, rather than'
+                             ' the default behavior of choosing Titlecase or'
+                             ' lowercase for each word (with probability 0.5)')
     parser.add_argument('--non-ascii', action='store_false',
                         dest='ascii', default=True,
                         help='Whether to allow words with non-ascii letters')
@@ -30,8 +31,13 @@ def main(argv=None):
     parser.add_argument('-d', '--delimiter', dest='delimiter', default=' ',
                         metavar='DELIM',
                         help='Use DELIM to separate words in passphrase')
+    parser.add_argument('-V', '--version', action='store_true',
+                        help="Show version")
 
     args = parser.parse_args()
+    if args.version:
+        print("%s %s" % (M.__name__, M.__version__))
+        sys.exit(0)
     if args.min > args.max:
         parser.exit("--max must be equal to or greater than --min")
     if args.min < 1 or args.max < 1:
@@ -47,7 +53,7 @@ def main(argv=None):
         min=args.min,
         max=args.max,
         num_words=args.num_words,
-        random_case=args.random_case,
+        lowercase=args.lowercase,
         delim=args.delimiter,
         pad=args.pad
     )

@@ -3,7 +3,8 @@
 [![Build Status](https://travis-ci.org/eukaryote/mkpassphrase.svg?branch=master)](https://travis-ci.org/eukaryote/mkpassphrase)
 
 `mkpassphrase` is a commandline script (and associated package) for generating
-passphrases by concatenating words selected from a file of words.
+passphrases by concatenating words chosen from a dictionary file that
+contains one word per line.
 
 # Installation
 
@@ -26,8 +27,8 @@ brusque Autumn advise Oratory
 
 ```console
 ~ » mkpassphrase --help
-usage: mkpassphrase [-h] [-n NUM_WORDS] [--min MIN] [--max MAX] [-f WORD_FILE]
-                    [--no-random-case] [--non-ascii] [-p PAD] [-d DELIM]
+usage: main.py [-h] [-n NUM_WORDS] [--min MIN] [--max MAX] [-f WORD_FILE]
+               [--lowercase] [--non-ascii] [-p PAD] [-d DELIM] [-V]
 
 Generate a passphrase.
 
@@ -39,12 +40,14 @@ optional arguments:
   --max MAX             Maximum word length
   -f WORD_FILE, --word-file WORD_FILE
                         Word file path (one word per line)
-  --no-random-case      Whether to randomly capitalize the first letter of
-                        each word
+  --lowercase           Make each word entirely lowercase, rather than the
+                        default behavior of choosing Titlecase or lowercase
+                        for each word (with probability 0.5)
   --non-ascii           Whether to allow words with non-ascii letters
   -p PAD, --pad PAD     Pad passphrase using PAD as prefix and suffix
   -d DELIM, --delimiter DELIM
                         Use DELIM to separate words in passphrase
+  -V, --version         Show version
 ~ »
 ```
 

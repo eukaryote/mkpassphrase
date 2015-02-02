@@ -94,11 +94,11 @@ def test_mkpassword_min_max(word_file):
     assert sorted(words) == sorted(test_words[-2:])
 
 
-def test_mkpassword_random_case_true(word_file):
+def test_mkpassword_lowercase_false(word_file):
     n = 100
     num_lower = num_title = 0
     for i in range(n):
-        passphrase, _ = M.mkpassphrase(word_file, random_case=True)
+        passphrase, _ = M.mkpassphrase(word_file, lowercase=False)
         for word in passphrase.split(M.DELIM):
             if re.match('^[a-z]+$', word):
                 num_lower += 1

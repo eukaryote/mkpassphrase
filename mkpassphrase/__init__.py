@@ -2,7 +2,7 @@
 Utility methods for generating passphrases from a dictionary file of words.
 """
 
-__version_info = (0, 3)
+__version_info = (0, 4)
 __version__ = '.'.join(map(str, __version_info))
 
 import random
@@ -104,7 +104,7 @@ def sample_words(all_words, k, delim=DELIM, random_case=True):
 
 
 def mkpassphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
-                 random_case=True, ascii=True, delim=DELIM, pad=PAD):
+                 lowercase=False, ascii=True, delim=DELIM, pad=PAD):
     """
     Make a passphrase using given params.
 
@@ -117,7 +117,8 @@ def mkpassphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
     - max: maximum length of each word in passphrase (at least 1, not less than
            ``min``).
     - num_words: number of words to include in passphrase (at least 1).
-    - random_case: whether to randomly title-case each word (else lowercase).
+    - lowercase: whether to keep initial letter of each word lowercased or
+                 capitalize it with probability 0.5.
     - ascii: whether to only include words contain just ascii letters, or to
              also include words that contain any unicode letter (but no
              characters that are not unicode letters).
@@ -135,10 +136,10 @@ def mkpassphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
 
     all_words = get_words(path, min=min, max=max, ascii=ascii)
     passphrase = sample_words(all_words, num_words, delim=delim,
-                              random_case=random_case)
+                              random_case=not lowercase)
     passphrase = pad + passphrase + pad
     num_candidates = len(all_words)
-    if random_case:
+    if not lowercase:
         num_candidates *= 2
     return passphrase, num_candidates
 
