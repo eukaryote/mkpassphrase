@@ -28,10 +28,11 @@ setup(
     license='http://www.opensource.org/licenses/mit-license.php',
     url='https://github.com/eukaryote/mkpassphrase',
     description='Word-based passphrase generator',
-    long_description='''A commandline script and an associated package for
-    generating natural-language passphrases by sampling from a large
-    dictionary file containing one word per line, yielding a passphrase
-    like "Snack cachets Duds Corey".''',
+    long_description=(
+        'A commandline script and an associated package for'
+        ' generating natural-language passphrases by sampling from a large'
+        ' dictionary file containing one word per line, yielding a passphrase'
+        ' like "Snack cachets Duds Corey".'),
     author='Calvin Smith',
     author_email='sapientdust+mkpassphrase@gmail.com',
     packages=[mkpassphrase.__name__],
