@@ -33,6 +33,8 @@ def main(argv=None):
                         help='Use DELIM to separate words in passphrase')
     parser.add_argument('-V', '--version', action='store_true',
                         help="Show version")
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        help='Print just the passphrase')
 
     args = parser.parse_args()
     if args.version:
@@ -60,8 +62,9 @@ def main(argv=None):
     possibilities = M.num_possible(num_candidates, args.num_words)
 
     print(passphrase)
-    print("{0:,g} unique candidate words".format(num_candidates))
-    print("{0:,g} possible passphrases".format(possibilities))
+    if not args.quiet:
+        print("{0:,g} unique candidate words".format(num_candidates))
+        print("{0:,g} possible passphrases".format(possibilities))
 
 
 if __name__ == '__main__':
