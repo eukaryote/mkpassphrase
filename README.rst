@@ -7,15 +7,23 @@ mkpassphrase
 
 `mkpassphrase` is a commandline script (and associated package) for generating
 passphrases by concatenating words chosen from a dictionary file that
-contains one word per line.
+contains one word per line. It generates passwords like
+`flippant Attests Ivory mildly` by default and is highly configurable.
 
 Installation
 ------------
 
-To install the latest stable version of `mkpassphrase` from PyPI, run::
+To install or upgrade to the latest stable version of `mkpassphrase` from PyPI,
+you can install it as your normal user by running::
 
-    # user install to ~/.local/bin on *nix
     pip install --user --upgrade mkpassphrase
+
+On Linux, that installs `mkpasphrase` to `~/.local/bin`, which you may need to
+add to your `$PATH`.
+
+Or you can install it globally by running::
+
+    sudo pip install --upgrade mkpassphrase
 
 
 Usage
@@ -23,7 +31,7 @@ Usage
 
 Generate a passphrase using the default settings::
 
-    ~ » mkpassphrase
+    $ mkpassphrase
     brusque Autumn advise Oratory
     60,298 unique candidate words
     1.32181e+19 possible passphrases
@@ -33,7 +41,7 @@ Options
 
 Use the `--help` option to see the available options::
 
-    ~ » mkpassphrase --help
+    $ mkpassphrase --help
     usage: main.py [-h] [-n NUM_WORDS] [--min MIN] [--max MAX] [-f WORD_FILE]
                    [--lowercase] [--non-ascii] [-p PAD] [-d DELIM] [-V]
 
@@ -55,7 +63,6 @@ Use the `--help` option to see the available options::
       -d DELIM, --delimiter DELIM
                             Use DELIM to separate words in passphrase
       -V, --version         Show version
-    ~ »
 
 
 Supported Python Versions and Operating Systems
