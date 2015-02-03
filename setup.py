@@ -1,9 +1,20 @@
 import sys
+import os
 
 from setuptools import setup
 from setuptools.command.test import test
 
 import mkpassphrase
+
+here_dir = os.path.abspath(os.path.dirname(__file__))
+
+
+def read(*filenames):
+    buf = []
+    for filename in filenames:
+        with open(os.path.join(here_dir, filename)) as f:
+            buf.append(f.read())
+    return '\n\n'.join(buf)
 
 
 class PyTest(test):
@@ -25,11 +36,7 @@ setup(
     license='http://www.opensource.org/licenses/mit-license.php',
     url='https://github.com/eukaryote/mkpassphrase',
     description='Word-based passphrase generator',
-    long_description=(
-        'A commandline script and an associated package for'
-        ' generating natural-language passphrases by sampling from a large'
-        ' dictionary file containing one word per line, yielding a passphrase'
-        ' like "Snack cachets Duds Corey".'),
+    long_description=read('README.rst', 'CHANGES.rst'),
     keywords='passphrase password',
     author='Calvin Smith',
     author_email='sapientdust+mkpassphrase@gmail.com',
