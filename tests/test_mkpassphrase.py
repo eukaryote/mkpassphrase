@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from __future__ import print_function
+from __future__ import unicode_literals
 
 import os
 import re
@@ -24,6 +25,60 @@ def verify_get_words(path, verifier, msg,
         assert verifier(word), msg % word
 
 
+def test_is_unicode_letter_yes():
+    assert M.is_unicode_letter('ú')
+    assert M.is_unicode_letter('Ѥ')
+    assert M.is_unicode_letter('u')
+    assert M.is_unicode_letter('X')
+    assert M.is_unicode_letter('Æ')
+    assert M.is_unicode_letter('Ë')
+
+
+def test_is_unicode_letter_no():
+    assert not M.is_unicode_letter('2')
+    assert not M.is_unicode_letter('®')
+
+
+def test_is_unicode_letter_non_unicode():
+    with pytest.raises(TypeError):
+        assert M.is_unicode_letter(str(3))
+
+
+@pytest.fixture
+def matchers():
+    return [M.mk_word_matcher(ascii=b) for b in [True, False]]
+
+
+def test_mk_word_matcher_too_short(matchers):
+    too_short = 'ab'
+    assert len(too_short) < M.MIN
+    for m in matchers:
+        assert not m(too_short)
+
+
+def test_mk_word_matcher_too_long(matchers):
+    too_long = 'ababababab'
+    assert len(too_long) > M.MAX
+    for m in matchers:
+        assert not m(too_long)
+
+
+def test_mk_word_matcher_not_letters(matchers):
+    for m in matchers:
+        assert not m("abc-def")
+        assert not m("wor rdd")
+        assert not m("1234")
+        assert not m("\n")
+        assert not m("")
+
+
+def test_mk_word_matcher_encoding():
+    m = M.mk_word_matcher(ascii=False)
+    with pytest.raises(M.EncodingError):
+        m(str('abcd'))
+    assert m('abcd')  # relying on unicode_literals
+
+
 def test_word_file(word_file):
     assert os.access(word_file, os.R_OK)
     assert '\n'.join(test_words) == open(word_file).read().strip()
@@ -37,7 +92,7 @@ def test_get_words_lowercased(word_file):
 
 def test_get_words_nonascii(word_file):
     words = M.get_words(word_file, ascii=False)
-    assert M.u('quúux') in words
+    assert 'quúux' in words
 
 
 def test_get_words_min_default(word_file):

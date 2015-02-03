@@ -9,13 +9,18 @@ import random
 import re
 import unicodedata
 
+# python 2/3 compatibility workarounds
 try:
     unicode
 except NameError:
     u = lambda s: s
+    u_type = str
 else:
-    u = lambda s: unicode(s)
-
+    # FIXME: shouldn't assume utf-8 here, but not sure under python2 how to
+    # determine what encoding to use without forcing the user to supply it,
+    # since the default encoding is supposed to always be ascii under python2.
+    u = lambda s: unicode(s, encoding='utf-8')
+    u_type = unicode
 
 try:
     from itertools import imap
@@ -30,6 +35,14 @@ WORDS = 4      # num words
 PAD = ''       # prefix/suffix of passphrase
 DELIM = u(' ')  # delimiter
 WORD_FILE = '/usr/share/dict/words'
+
+
+class EncodingError(Exception):
+
+    """
+    Represents an encoding error due to incompatibility between the expected
+    and actual encoding of a word read from a word file.
+    """
 
 
 def is_unicode_letter(char):
@@ -60,6 +73,10 @@ def mk_word_matcher(min=MIN, max=MAX, ascii=True):
     else:
 
         def matcher(word):
+            if not isinstance(word, u_type):
+                msg = ("Expected unicode words for ascii=False, but found "
+                       "word %r of type %s")
+                raise EncodingError(msg % (word, type(word)))
             length = len(word)
             return bool(length >= min and length <= max and
                         all(imap(is_unicode_letter, word)))
