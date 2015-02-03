@@ -81,6 +81,23 @@ def test_mk_word_matcher_encoding():
     assert m('abcd')  # relying on unicode_literals
 
 
+def test_mk_word_matcher_custom_min():
+    matchers = [M.mk_word_matcher(ascii=a, min=5) for a in [True, False]]
+    for m in matchers:
+        assert m('abcde')
+        assert m('abcdef')
+        assert not m('abcd')
+
+
+def test_mk_word_matcher_custom_max():
+    matchers = [M.mk_word_matcher(ascii=a, max=5) for a in [True, False]]
+    for m in matchers:
+        assert m('abcd')
+        assert m('abcde')
+        assert not m('abcdef')
+        assert not m('abcdefg')
+
+
 def test_word_file(word_file):
     assert os.access(word_file, os.R_OK)
     assert '\n'.join(test_words) == open(word_file).read().strip()
