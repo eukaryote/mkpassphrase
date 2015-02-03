@@ -40,8 +40,9 @@ def test_is_unicode_letter_no():
 
 
 def test_is_unicode_letter_non_unicode():
+    s = '3'.encode('ascii')
     with pytest.raises(TypeError):
-        assert M.is_unicode_letter(str(3))
+        assert M.is_unicode_letter(s)
 
 
 @pytest.fixture
@@ -74,8 +75,9 @@ def test_mk_word_matcher_not_letters(matchers):
 
 def test_mk_word_matcher_encoding():
     m = M.mk_word_matcher(ascii=False)
+    s = 'abcd'.encode('ascii')
     with pytest.raises(M.EncodingError):
-        m(str('abcd'))
+        m(s)
     assert m('abcd')  # relying on unicode_literals
 
 
