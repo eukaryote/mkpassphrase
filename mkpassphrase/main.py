@@ -18,13 +18,11 @@ def main(argv=None):
     parser.add_argument('-f', '--word-file', type=str, metavar='WORD_FILE',
                         help='Word file path (one word per line)',
                         default=M.WORD_FILE)
-    parser.add_argument('--lowercase', action='store_true',
-                        dest='lowercase', default=False,
+    parser.add_argument('--lowercase', action='store_true', dest='lowercase',
                         help='Make each word entirely lowercase, rather than'
                              ' the default behavior of choosing Titlecase or'
                              ' lowercase for each word (with probability 0.5)')
-    parser.add_argument('--non-ascii', action='store_false',
-                        dest='ascii', default=True,
+    parser.add_argument('--non-ascii', action='store_false', dest='ascii',
                         help='Whether to allow words with non-ascii letters')
     parser.add_argument('-p', '--pad', metavar='PAD', default='',
                         help='Pad passphrase using PAD as prefix and suffix')
