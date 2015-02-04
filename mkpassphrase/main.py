@@ -48,20 +48,16 @@ def main(argv=None):
         parser.exit("word file does not exist or is not readable: %s" %
                     args.word_file)
 
-    try:
-        passphrase, num_candidates = M.mkpassphrase(
-            path=args.word_file,
-            min=args.min,
-            max=args.max,
-            num_words=args.num_words,
-            lowercase=args.lowercase,
-            delim=args.delimiter,
-            pad=args.pad,
-            ascii=args.ascii
-        )
-    except M.EncodingError:
-        print()
-        sys.exit(1)
+    passphrase, num_candidates = M.mkpassphrase(
+        path=args.word_file,
+        min=args.min,
+        max=args.max,
+        num_words=args.num_words,
+        lowercase=args.lowercase,
+        delim=args.delimiter,
+        pad=args.pad,
+        ascii=args.ascii
+    )
 
     possibilities = M.num_possible(num_candidates, args.num_words)
 
