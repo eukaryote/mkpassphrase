@@ -142,6 +142,10 @@ def mkpassphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
     - delim: the delimiter to use for joining the words in the passphrase.
     - pad: a string to use as a prefix and suffix of the generated passphrase.
 
+    :return:
+    - passphrase: the generated passphrase (string)
+    - num_candidates: the number of unique candidate words used to generate
+      the passphrase (int)
     """
     if min < 1:
         raise ValueError("'min' must be at least 1")
