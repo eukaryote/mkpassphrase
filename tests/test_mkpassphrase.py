@@ -175,11 +175,11 @@ def test_sample_words_len(words):
     assert len(ws.split(M.DELIM)) == k
 
 
-def test_sample_words_title_case(words):
+def test_sample_words_random_case(words):
 
-    def has_title_case(results):
+    def has_title_case(results, delim=M.DELIM):
         for ws in results:
-            for w in ws:
+            for w in ws.split(delim):
                 if w.title() == w:
                     return True
         return False
@@ -188,8 +188,14 @@ def test_sample_words_title_case(words):
     assert len(words) > k
 
     # verify default (True)
-    results = [M.sample_words(words, k) for i in range(5)]
+    results = [M.sample_words(words, k) for i in range(10)]
     assert has_title_case(results)
+
+    # verify False
+    words = [w.lower() for w in words]
+    words = [w for w in words if re.match('^[a-z]+$', w)]
+    results = [M.sample_words(words, k, random_case=False) for i in range(10)]
+    assert not has_title_case(results)
 
 
 def test_sample_words_unique(words):
