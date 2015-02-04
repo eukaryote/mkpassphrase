@@ -67,6 +67,7 @@ def test_mk_word_matcher_too_long(matchers):
 def test_mk_word_matcher_not_letters(matchers):
     for m in matchers:
         assert not m("abc-def")
+        assert not m("abc_def")
         assert not m("wor rdd")
         assert not m("1234")
         assert not m("\n")
@@ -96,6 +97,15 @@ def test_mk_word_matcher_custom_max():
         assert m('abcde')
         assert not m('abcdef')
         assert not m('abcdefg')
+
+
+def test_mk_word_matcher_min_max():
+    m = M.mk_word_matcher(min=5, max=5)
+    assert m('abcde')
+    assert not m('abcd')
+    assert not m('abcdef')
+    with pytest.raises(ValueError):
+        M.mk_word_matcher(min=5, max=4)
 
 
 def test_word_file(word_file):
