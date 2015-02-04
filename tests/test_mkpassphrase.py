@@ -4,6 +4,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import os
+import tempfile
 import re
 
 import pytest
@@ -17,6 +18,37 @@ try:
 except NameError:
     import functools
     reduce = functools.reduce
+
+
+@pytest.fixture
+def word_file(request):
+    tmp = tempfile.mktemp()
+    request.addfinalizer(lambda: os.remove(tmp))
+    with open(tmp, 'w') as f:
+        for word in test_words:
+            print(word, file=f)
+    return tmp
+
+
+@pytest.fixture
+def words(word_file):
+    with open(word_file) as f:
+        return list(filter(None, f.read().split('\n')))
+
+
+@pytest.fixture
+def matchers():
+    return [M.mk_word_matcher(ascii=b) for b in [True, False]]
+
+
+# sanity check fixtures, to be sure tests are testing what they think they are
+def test_word_file_fixture(word_file):
+    assert os.access(word_file, os.R_OK)
+    assert '\n'.join(test_words) == open(word_file).read().strip()
+
+
+def test_words_fixture(words):
+    assert test_words == tuple(words)
 
 
 def verify_get_words(path, verifier, msg,
@@ -43,11 +75,6 @@ def test_is_unicode_letter_non_unicode():
     s = '3'.encode('ascii')
     with pytest.raises(TypeError):
         assert M.is_unicode_letter(s)
-
-
-@pytest.fixture
-def matchers():
-    return [M.mk_word_matcher(ascii=b) for b in [True, False]]
 
 
 def test_mk_word_matcher_too_short(matchers):
@@ -108,11 +135,6 @@ def test_mk_word_matcher_min_max():
         M.mk_word_matcher(min=5, max=4)
 
 
-def test_word_file(word_file):
-    assert os.access(word_file, os.R_OK)
-    assert '\n'.join(test_words) == open(word_file).read().strip()
-
-
 def test_get_words_lowercased(word_file):
     """ All words should be just lowercase letters (ascii only) by default. """
     verify_get_words(word_file, (lambda w: re.match('^[a-z]+$', w)),
@@ -146,9 +168,49 @@ def test_get_words_max_custom(word_file):
                      "'%s' too long", max=M.MAX - 1)
 
 
-def test_mk_word_pat_min_lte_max():
-    with pytest.raises(ValueError):
-        M.mk_word_matcher(min=5, max=4)
+def test_sample_words_len(words):
+    k = 5
+    assert len(words) > k
+    ws = M.sample_words(words, k)
+    assert len(ws.split(M.DELIM)) == k
+
+
+def test_sample_words_title_case(words):
+
+    def has_title_case(results):
+        for ws in results:
+            for w in ws:
+                if w.title() == w:
+                    return True
+        return False
+
+    k = 5
+    assert len(words) > k
+
+    # verify default (True)
+    results = [M.sample_words(words, k) for i in range(5)]
+    assert has_title_case(results)
+
+
+def test_sample_words_unique(words):
+    k = 4
+    # normalize for testing purposes below
+    words = list(set([w.lower() for w in words]))
+
+    results = [M.sample_words(words, k) for i in range(20)]
+    for result in results:
+        ws = result.split(M.DELIM)
+        assert sorted(set(ws)) == sorted(ws)
+
+
+def test_sample_words_delim(words):
+    k = 5
+    delim = '_'
+    res = M.sample_words(words, k, delim=delim)
+    assert res.count(delim) == k - 1
+    regex = '^[^{delim}]+({delim}[^{delim}]+){{{n}}}'
+    regex = regex.format(delim=delim, n=k - 1)
+    assert re.match(regex, res)
 
 
 def test_mkpassword_defaults(word_file):
