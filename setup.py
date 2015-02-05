@@ -30,22 +30,13 @@ class PyTest(test):
         sys.exit(errcode)
 
 
-def remove_build_link(text):
-    # pypi puts rel="nofollow" on the link surrounding the build image,
-    # which causes the browser to not follow the image and to display a
-    # broken image icon instead, so we filter the link and just show the image
-    import re
-    regex = '\s*:target: https://travis-ci\.org/[^\n]*'
-    return re.sub(regex, '', text, count=1)
-
-
 setup(
     name=mkpassphrase.__name__,
     version=mkpassphrase.__version__,
     license='http://www.opensource.org/licenses/mit-license.php',
     url='https://github.com/eukaryote/mkpassphrase',
     description='Word-based passphrase generator',
-    long_description=remove_build_link(read('README.rst', 'CHANGES.rst')),
+    long_description=read('README.rst', 'CHANGES.rst'),
     keywords='passphrase password',
     author='Calvin Smith',
     author_email='sapientdust+mkpassphrase@gmail.com',
