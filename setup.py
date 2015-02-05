@@ -35,8 +35,8 @@ def remove_build_link(text):
     # which causes the browser to not follow the image and to display a
     # broken image icon instead, so we filter the link and just show the image
     import re
-    regex = '\s*:target: https://travis-ci\.org/[^\n]*\n'
-    return re.sub(regex, '', text, count=1, flags=re.DOTALL)
+    regex = '\s*:target: https://travis-ci\.org/[^\n]*'
+    return re.sub(regex, '', text, count=1)
 
 
 setup(

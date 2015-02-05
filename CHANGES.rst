@@ -2,6 +2,12 @@
 Changes
 =======
 
+v0.6.4
+-------
+
+ * cosmetic changes for better PyPI display
+
+
 v0.6.2
 ------
 

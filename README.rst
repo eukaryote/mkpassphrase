@@ -2,8 +2,8 @@
 mkpassphrase
 ============
 
-.. image:: https://travis-ci.org/eukaryote/mkpassphrase.svg?branch=master
-    :target: https://travis-ci.org/eukaryote/mkpassphrase
+.. image:: //travis-ci.org/eukaryote/mkpassphrase.svg?branch=master
+    :target: //travis-ci.org/eukaryote/mkpassphrase
 
 `mkpassphrase` is a commandline script (and associated package) for generating
 passphrases by concatenating words chosen from a dictionary file that
