@@ -16,9 +16,8 @@ except NameError:
     u = lambda s: s
     u_type = str
 else:
-    # FIXME: shouldn't assume utf-8 here, but not sure under python2 how to
-    # determine what encoding to use without forcing the user to supply it,
-    # since the default encoding is supposed to always be ascii under python2.
+    # default encoding is always supposed to be ascii under python2, so we
+    # just try as utf-8 and don't support other encodings for now
     u = lambda s: unicode(s, encoding='utf-8')
     u_type = unicode
 
