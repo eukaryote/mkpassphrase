@@ -29,6 +29,9 @@ def main(argv=None):
     parser.add_argument('-d', '--delimiter', dest='delimiter', default=' ',
                         metavar='DELIM',
                         help='Use DELIM to separate words in passphrase')
+    parser.add_argument('-t', '--items', dest='times', type=int, default=1,
+                        metavar='TIMES', help="Generate TIMES different "
+                        "passphrases")
     parser.add_argument('-V', '--version', action='store_true',
                         help="Show version")
     parser.add_argument('-q', '--quiet', action='store_true',
@@ -44,24 +47,27 @@ def main(argv=None):
         parser.exit('--min and --max must be positive')
     if args.num_words < 1:
         parser.exit('--num-words must be positive')
+    if args.times < 1:
+        parser.exit('--times must be positive')
     if not os.access(args.word_file, os.R_OK):
         parser.exit("word file does not exist or is not readable: %s" %
                     args.word_file)
 
-    passphrase, num_candidates = M.mkpassphrase(
-        path=args.word_file,
-        min=args.min,
-        max=args.max,
-        num_words=args.num_words,
-        lowercase=args.lowercase,
-        delim=args.delimiter,
-        pad=args.pad,
-        ascii=args.ascii
-    )
+    for i in range(args.times):
+        passphrase, num_candidates = M.mkpassphrase(
+            path=args.word_file,
+            min=args.min,
+            max=args.max,
+            num_words=args.num_words,
+            lowercase=args.lowercase,
+            delim=args.delimiter,
+            pad=args.pad,
+            ascii=args.ascii
+        )
+        print(passphrase)
 
     possibilities = M.num_possible(num_candidates, args.num_words)
 
-    print(passphrase)
     if not args.quiet:
         print("{0:,g} unique candidate words".format(num_candidates))
         print("{0:,g} possible passphrases".format(possibilities))

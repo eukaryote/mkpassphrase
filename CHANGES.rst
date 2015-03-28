@@ -2,6 +2,11 @@
 Changes
 =======
 
+v0.7.0
+------
+
+ * added -t|--times N to allow generating multiple passphrases w/ one command.
+
 v0.6.8
 ------
 
