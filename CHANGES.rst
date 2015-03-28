@@ -2,6 +2,11 @@
 Changes
 =======
 
+v0.6.8
+------
+
+ * include CHANGES.rst and README.rst in sdist via MANIFEST.in
+
 v0.6.7
 ------
 
