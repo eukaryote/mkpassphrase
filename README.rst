@@ -42,8 +42,9 @@ Options
 Use the `--help` option to see the available options::
 
     $ mkpassphrase --help
-    usage: main.py [-h] [-n NUM_WORDS] [--min MIN] [--max MAX] [-f WORD_FILE]
-                   [--lowercase] [--non-ascii] [-p PAD] [-d DELIM] [-V]
+    usage: mkpassphrase [-h] [-n NUM_WORDS] [--min MIN] [--max MAX] [-f WORD_FILE]
+                        [--lowercase] [--non-ascii] [-p PAD] [-d DELIM] [-t TIMES]
+                        [-V] [-q]
 
     Generate a passphrase.
 
@@ -62,7 +63,10 @@ Use the `--help` option to see the available options::
       -p PAD, --pad PAD     Pad passphrase using PAD as prefix and suffix
       -d DELIM, --delimiter DELIM
                             Use DELIM to separate words in passphrase
+      -t TIMES, --items TIMES
+                            Generate TIMES different passphrases
       -V, --version         Show version
+      -q, --quiet           Print just the passphrase
 
 
 Supported Python Versions and Operating Systems
