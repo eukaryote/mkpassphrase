@@ -5,9 +5,17 @@ Utility methods for generating passphrases from a dictionary file of words.
 __version_info__ = (0, 7, 0)
 __version__ = '.'.join(map(str, __version_info__))
 
-import random
+import random as _random
 import re
 import unicodedata
+
+# use CSPRNG if possible
+try:
+    random = _random.SystemRandom()
+except Exception:
+    print("WARN: cryptographically secure pseudo-random number "
+          "generator not available")
+    random = _random
 
 # python 2/3 compatibility workarounds
 try:
