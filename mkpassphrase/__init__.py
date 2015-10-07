@@ -2,6 +2,8 @@
 Utility methods for generating passphrases from a dictionary file of words.
 """
 
+from __future__ import absolute_import, division, print_function
+
 __version_info__ = (0, 7, 0)
 __version__ = '.'.join(map(str, __version_info__))
 
