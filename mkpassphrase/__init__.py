@@ -118,7 +118,8 @@ def sample_words(all_words, k, delim=DELIM, random_case=True):
     to join the words.
 
     If ``random_case`` is true (the default), then each word will
-    with probability 0.5 be converted to title case.
+    with probability 0.5 be converted to title case, otherwise
+    the word is used unchanged as sampled from ``all_words``.
     """
     all_words = list(all_words)
     words = random.sample(all_words, k)
