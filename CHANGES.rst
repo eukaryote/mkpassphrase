@@ -2,6 +2,12 @@
 Changes
 =======
 
+v0.8.0
+------
+
+ * use cryptographically secure pseudo-random number generator if available.
+ * added standard imports to help with python2/3 compatibility.
+
 v0.7.0
 ------
 
