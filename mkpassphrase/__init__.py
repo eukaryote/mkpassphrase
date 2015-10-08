@@ -1,5 +1,5 @@
 """
-Utility methods for generating passphrases from a dictionary file of words.
+Utilities for generating passphrases from a dictionary file of words.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -7,17 +7,20 @@ from __future__ import absolute_import, division, print_function
 __version_info__ = (0, 7, 0)
 __version__ = '.'.join(map(str, __version_info__))
 
+import os
 import random as _random
 import re
 import unicodedata
 
 # use CSPRNG if possible
 try:
-    random = _random.SystemRandom()
-except Exception:
+    os.urandom(1)
+except NotImplementedError:
     print("WARNING: cryptographically secure pseudo-random number "
           "generator not available")
     random = _random
+else:
+    random = _random.SystemRandom()
 
 # python 2/3 compatibility workarounds
 try:

@@ -4,8 +4,10 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import os
+import sys
 import tempfile
 import re
+import random as _random
 
 import pytest
 
@@ -286,3 +288,37 @@ def test_num_possible():
 
     with pytest.raises(ValueError):
         M.num_possible(1, 0)
+
+
+def test_csprng_unavailable():
+    # patch os.urandom so it behaves as if not implemented, if needed
+    _urandom = None
+    try:
+        os.urandom(1)
+    except NotImplementedError:
+        pass  # no need to patch
+    else:
+        _urandom = os.urandom
+
+        def fail(n):
+            raise NotImplementedError()
+        os.urandom = fail
+
+    # reimport to test module initialization logic when urandom not implemented
+    try:
+        try:
+            del sys.modules['mkpassphrase']
+            import mkpassphrase as M
+            assert M.random is _random, "should use non-CSPRNG impl"
+        finally:
+            if _urandom:
+                os.urandom = _urandom
+    finally:
+        # undo the patch
+        try:
+            del sys.modules['mkpassphrase']
+        except KeyError:
+            pass
+        import mkpassphrase as M
+        if _urandom:
+            assert isinstance(M.random, _random.SystemRandom)
