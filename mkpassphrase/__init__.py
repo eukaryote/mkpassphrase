@@ -15,7 +15,7 @@ import unicodedata
 try:
     random = _random.SystemRandom()
 except Exception:
-    print("WARN: cryptographically secure pseudo-random number "
+    print("WARNING: cryptographically secure pseudo-random number "
           "generator not available")
     random = _random
 
