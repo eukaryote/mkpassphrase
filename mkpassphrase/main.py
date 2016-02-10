@@ -1,13 +1,17 @@
+"""Main executable module for mkpassphrase, installed as `mkpassphrase`."""
+
 from __future__ import absolute_import, division, print_function
 
 import sys
 import os
+import math
 import argparse
 
 import mkpassphrase as M
 
 
 def main(argv=None):
+    """Command-line entry point."""
     if argv is None:
         argv = sys.argv
     parser = argparse.ArgumentParser(description='Generate a passphrase.')
@@ -68,11 +72,12 @@ def main(argv=None):
         )
         print(passphrase)
 
-    possibilities = M.num_possible(num_candidates, args.num_words)
+    poss = M.num_possible(num_candidates, args.num_words)
 
     if not args.quiet:
         print("{0:,g} unique candidate words".format(num_candidates))
-        print("{0:,g} possible passphrases".format(possibilities))
+        print("10^{} possible passphrases".format(int(math.log(poss, 10))))
+        print("{} entropy bits".format(int((math.log(poss, 2)))))
 
 
 if __name__ == '__main__':
