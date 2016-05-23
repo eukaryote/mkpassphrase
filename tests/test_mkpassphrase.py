@@ -278,6 +278,21 @@ def test_mkpassword_pad(word_file):
     assert passphrase.endswith(pad)
 
 
+def test_mkpassphrase_count_default(word_file):
+    result, _ = M.mkpassphrase(word_file)
+    assert isinstance(result, M.u_type)
+    result, _ = M.mkpassphrase(word_file, count=1)
+    assert isinstance(result, M.u_type)
+
+
+@pytest.mark.parametrize('count', list(range(2, 6)))
+def test_mkpassphrase_count_multiple(word_file, count):
+    passphrases, _ = M.mkpassphrase(word_file, count=count)
+    assert isinstance(passphrases, list)
+    assert isinstance(passphrases[0], M.u_type)
+    assert len(set(passphrases)) == len(passphrases)
+
+
 def test_num_possible():
     assert M.num_possible(10, 1) == 10
     assert M.num_possible(10, 2) == 10 * 9
