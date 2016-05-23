@@ -4,9 +4,6 @@ Utilities for generating passphrases from a dictionary file of words.
 
 from __future__ import absolute_import, division, print_function
 
-__version_info__ = (0, 8, 0)
-__version__ = '.'.join(map(str, __version_info__))
-
 import os
 import random as _random
 import re
@@ -26,12 +23,14 @@ else:
 try:
     unicode
 except NameError:
-    u = lambda s: s
+    def u(s):
+        return s
     u_type = str
 else:
     # default encoding is always supposed to be ascii under python2, so we
     # just try as utf-8 and don't support other encodings for now
-    u = lambda s: unicode(s, encoding='utf-8')
+    def u(s):
+        return unicode(s, encoding='utf-8')
     u_type = unicode
 
 try:
@@ -40,11 +39,15 @@ except ImportError:
     imap = map
 
 
+__version_info__ = (0, 9, 0)
+__version__ = '.'.join(map(str, __version_info__))
+
+
 # defaults
-MIN = 3        # min word length
-MAX = 7        # max word length
-WORDS = 4      # num words
-PAD = ''       # prefix/suffix of passphrase
+MIN = 3         # min word length
+MAX = 7         # max word length
+WORDS = 4       # num words
+PAD = ''        # prefix/suffix of passphrase
 DELIM = u(' ')  # delimiter
 WORD_FILE = '/usr/share/dict/words'
 
@@ -134,9 +137,9 @@ def sample_words(all_words, k, delim=DELIM, random_case=True):
 
 
 def mkpassphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
-                 lowercase=False, ascii=True, delim=DELIM, pad=PAD):
+                 lowercase=False, ascii=True, delim=DELIM, pad=PAD, count=1):
     """
-    Make a passphrase using given params.
+    Make one or more passphrases using given params.
 
     :params:
     - path: path to a word file, one word per line, encoded with a character
@@ -154,9 +157,13 @@ def mkpassphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
              characters that are not unicode letters).
     - delim: the delimiter to use for joining the words in the passphrase.
     - pad: a string to use as a prefix and suffix of the generated passphrase.
+    - count: positive integer representing the number of passwords to generate,
+             defaulting to 1. If greater than one, the ``passphrase`` returned
+             will be a list of passphrases. If equal to one, the ``passphrase``
+             will be just a string passphrase and not a one-element list.
 
     :return:
-    - passphrase: the generated passphrase (string)
+    - passphrase: the generated passphrase (string) or list of passphrases
     - num_candidates: the number of unique candidate words used to generate
       the passphrase (int)
     """
@@ -167,15 +174,22 @@ def mkpassphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
                          " or equal to 'min'")
     if num_words < 1:
         raise ValueError("'num_words' must be at least 1")
+    if not isinstance(count, int) or count < 1:
+        raise ValueError("'count' must be a positive int")
 
     all_words = get_words(path, min=min, max=max, ascii=ascii)
-    passphrase = sample_words(all_words, num_words, delim=delim,
-                              random_case=not lowercase)
-    passphrase = pad + passphrase + pad
+    passphrases = []
+    for i in range(count):
+        passphrase = sample_words(all_words, num_words, delim=delim,
+                                  random_case=not lowercase)
+        passphrase = pad + passphrase + pad
+        passphrases.append(passphrase)
+
     num_candidates = len(all_words)
     if not lowercase:
         num_candidates *= 2
-    return passphrase, num_candidates
+
+    return (passphrases[0] if count == 1 else passphrases), num_candidates
 
 
 def num_possible(num_candidates, num_words):

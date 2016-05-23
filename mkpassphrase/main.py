@@ -59,22 +59,26 @@ def main(argv=None):
         parser.exit("word file does not exist or is not readable: %s" %
                     args.word_file)
 
-    for i in range(args.times):
-        passphrase, num_candidates = M.mkpassphrase(
-            path=args.word_file,
-            min=args.min,
-            max=args.max,
-            num_words=args.num_words,
-            lowercase=args.lowercase,
-            delim=args.delimiter,
-            pad=args.pad,
-            ascii=args.ascii
-        )
+    passphrases, num_candidates = M.mkpassphrase(
+        path=args.word_file,
+        min=args.min,
+        max=args.max,
+        num_words=args.num_words,
+        lowercase=args.lowercase,
+        delim=args.delimiter,
+        pad=args.pad,
+        ascii=args.ascii,
+        count=args.times
+    )
+    if args.times == 1:
+        passphrases = [passphrases]
+    for passphrase in passphrases:
         print(passphrase)
 
     poss = M.num_possible(num_candidates, args.num_words)
 
     if not args.quiet:
+        print()
         print("{0:,g} unique candidate words".format(num_candidates))
         print("10^{} possible passphrases".format(int(math.log(poss, 10))))
         print("{} entropy bits".format(int((math.log(poss, 2)))))
