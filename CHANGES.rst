@@ -2,16 +2,22 @@
 Changes
 =======
 
+v0.9.0
+------
+
+ * much faster generation of multiple passphrases using `-t`
+ * minor verbiage tweaks for non-quiet output
+
 v0.8.0
 ------
 
- * use cryptographically secure pseudo-random number generator if available.
- * added standard imports to help with python2/3 compatibility.
+ * use cryptographically secure pseudo-random number generator if available
+ * added standard imports to help with python2/3 compatibility
 
 v0.7.0
 ------
 
- * added -t|--times N to allow generating multiple passphrases w/ one command.
+ * added -t|--times N to allow generating multiple passphrases w/ one command
 
 v0.6.8
 ------

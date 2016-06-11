@@ -5,36 +5,50 @@ mkpassphrase
 .. image:: https://travis-ci.org/eukaryote/mkpassphrase.svg?branch=master
     :target: https://travis-ci.org/eukaryote/mkpassphrase
 
-`mkpassphrase` is a commandline script (and associated package) for generating
-passphrases by concatenating words chosen from a dictionary file that
-contains one word per line. It generates passwords like
-`flippant Attests Ivory mildly` by default and is highly configurable.
+`mkpassphrase` is a commandline script (and an associated package) for
+generating passphrases by concatenating words chosen from a dictionary file
+that contains one word per line (such as the standard `/usr/share/dict/words`
+on *nix systems. It generates passphrases like
+`flippant Attests Ivory mildly Roamers` by default and is highly configurable.
 
 Installation
 ------------
 
 To install or upgrade to the latest stable version of `mkpassphrase` from PyPI,
-you can install it as your normal user by running::
+you can install it as your normal user by running:
 
-    pip install --user --upgrade mkpassphrase
+.. code-block:: shell-session
+
+    $ pip install --user --upgrade mkpassphrase
 
 On Linux, that installs `mkpasphrase` to `~/.local/bin`, which you may need to
 add to your `$PATH`.
 
-Or you can install it globally by running::
+Or you can install it globally by running:
 
-    sudo pip install --upgrade mkpassphrase
+.. code-block:: shell-session
+
+    $ sudo pip install --upgrade mkpassphrase
 
 
 Usage
 -----
 
-Generate a passphrase using the default settings::
+Generate a passphrase using the default settings:
+
+.. code-block:: shell-session
 
     $ mkpassphrase
-    brusque Autumn advise Oratory
+    Twelfth Ninja cubist Pepsin cattle
+
     60,298 unique candidate words
-    1.32181e+19 possible passphrases
+    79-bit security level
+
+The security level reported is based only on the number of words in the
+passphrase and the number of possible words (as well as whether
+the ``--lowercase`` option is chosen), and does not include other factors
+such as padding or a custom delimiter, which would increase the security
+level.
 
 Options
 -------
