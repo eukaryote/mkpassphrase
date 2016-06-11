@@ -9,7 +9,8 @@ mkpassphrase
 generating passphrases by concatenating words chosen from a dictionary file
 that contains one word per line (such as the standard `/usr/share/dict/words`
 on *nix systems. It generates passphrases like
-`flippant Attests Ivory mildly Roamers` by default and is highly configurable.
+``flippant Attests Ivory mildly Roamers`` by default and is highly
+configurable.
 
 Installation
 ------------
