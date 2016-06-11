@@ -194,8 +194,8 @@ def mkpassphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
 
 def num_possible(num_candidates, num_words):
     """
-    Calculate the number of possible passphrases that could be generated
-    by selecting ``num_words`` from ``num_candidates``, each of which
+    Calculate the number of possible word tuples containing ``num_words`` elems
+    that could be generated from ``num_candidates``, each of which
     must be at least 1.
     """
     if num_candidates < 1:
