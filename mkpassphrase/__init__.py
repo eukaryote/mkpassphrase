@@ -46,7 +46,7 @@ __version__ = '.'.join(map(str, __version_info__))
 # defaults
 MIN = 3         # min word length
 MAX = 7         # max word length
-WORDS = 4       # num words
+WORDS = 5       # num words
 PAD = ''        # prefix/suffix of passphrase
 DELIM = u(' ')  # delimiter
 WORD_FILE = '/usr/share/dict/words'

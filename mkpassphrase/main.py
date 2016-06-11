@@ -80,8 +80,7 @@ def main(argv=None):
     if not args.quiet:
         print()
         print("{0:,g} unique candidate words".format(num_candidates))
-        print("10^{} possible passphrases".format(int(math.log(poss, 10))))
-        print("{} entropy bits".format(int((math.log(poss, 2)))))
+        print("{}-bit security level".format(int((math.log(poss, 2)))))
 
 
 if __name__ == '__main__':
