@@ -5,10 +5,10 @@ mkpassphrase
 .. image:: https://travis-ci.org/eukaryote/mkpassphrase.svg?branch=master
     :target: https://travis-ci.org/eukaryote/mkpassphrase
 
-`mkpassphrase` is a commandline script (and an associated package) for
+`mkpassphrase` is a commandline script and an associated package for
 generating passphrases by concatenating words chosen from a dictionary file
 that contains one word per line (such as the standard `/usr/share/dict/words`
-on *nix systems. It generates passphrases like
+on \*nix systems. It generates passphrases like
 ``flippant Attests Ivory mildly Roamers`` by default and is highly
 configurable.
 
@@ -54,7 +54,9 @@ level.
 Options
 -------
 
-Use the `--help` option to see the available options::
+Use the `--help` option to see the available options:
+
+.. code-block:: shell-session
 
     $ mkpassphrase --help
     usage: mkpassphrase [-h] [-n NUM_WORDS] [--min MIN] [--max MAX] [-f WORD_FILE]
