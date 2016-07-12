@@ -3,6 +3,7 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import codecs
 import os
 import sys
 import tempfile
@@ -26,15 +27,16 @@ except NameError:
 def word_file(request):
     tmp = tempfile.mktemp()
     request.addfinalizer(lambda: os.remove(tmp))
-    with open(tmp, 'w') as f:
+    with codecs.open(tmp, 'w', 'utf-8') as f:
         for word in test_words:
-            print(word, file=f)
+            f.write(word)
+            f.write('\n')
     return tmp
 
 
 @pytest.fixture
 def words(word_file):
-    with open(word_file) as f:
+    with codecs.open(word_file, 'r', 'utf-8') as f:
         return list(filter(None, f.read().split('\n')))
 
 
@@ -46,7 +48,10 @@ def matchers():
 # sanity check fixtures, to be sure tests are testing what they think they are
 def test_word_file_fixture(word_file):
     assert os.access(word_file, os.R_OK)
-    assert '\n'.join(test_words) == open(word_file).read().strip()
+    with codecs.open(word_file, 'r', 'utf-8') as f:
+        result = f.read().strip()
+    expected = u'\n'.join(test_words)
+    assert result == expected
 
 
 def test_words_fixture(words):
