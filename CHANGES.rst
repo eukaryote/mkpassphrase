@@ -3,7 +3,7 @@ Changes
 =======
 
 v1.0.0
-----
+------
 
  * 1.0 bump, and change to 'stable'
  * python3 support is limited to 3.2.5+ (python2.7 still supported)
