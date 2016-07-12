@@ -1,7 +1,6 @@
 language: python
 python:
   - "2.7"
-  - "3.2"
   - "3.3"
   - "3.4"
   - "3.5"
@@ -10,9 +9,10 @@ python:
 
 # command to install dependencies
 install:
+  - pip install pytest-flake8 pytest-pep257
   - pip install .
 # command to run tests
-script: py.test
+script: py.test --flake8 --pep257 -s tests
 branches:
   only:
     - master
