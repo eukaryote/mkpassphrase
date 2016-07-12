@@ -1,12 +1,13 @@
-"""
-Utilities for generating passphrases from a dictionary file of words.
-"""
+"""Utilities for generating passphrases from a dictionary file of words."""
 
 from __future__ import absolute_import, division, print_function
 
+import functools
 import os
 import random as _random
 import re
+import sys
+import types
 import unicodedata
 
 # use CSPRNG if possible
@@ -20,26 +21,18 @@ else:
     random = _random.SystemRandom()
 
 # python 2/3 compatibility workarounds
-try:
-    unicode
-except NameError:
-    def u(s):
-        return s
-    u_type = str
+if sys.version_info[0] >= 3:
+    u = u_type = str
 else:
     # default encoding is always supposed to be ascii under python2, so we
     # just try as utf-8 and don't support other encodings for now
-    def u(s):
-        return unicode(s, encoding='utf-8')
-    u_type = unicode
-
-try:
-    from itertools import imap
-except ImportError:
-    imap = map
+    u = functools.partial(types.UnicodeType, encoding='utf8')
+    u_type = types.UnicodeType
+    # alias imap as map under python2 for consistency with python3
+    from itertools import imap as map
 
 
-__version_info__ = (0, 9, 0)
+__version_info__ = (0, 9, 1)
 __version__ = '.'.join(map(str, __version_info__))
 
 
@@ -53,23 +46,22 @@ WORD_FILE = '/usr/share/dict/words'
 
 
 class EncodingError(Exception):
-
-    """
-    Represents an encoding error due to incompatibility between the expected
-    and actual encoding of a word read from a word file.
-    """
+    """Encoding error procesing word file."""
 
 
 def is_unicode_letter(char):
-    """ Answer whether given unicode character is a letter."""
+    """Answer whether given unicode character is a letter."""
     return unicodedata.category(char) in ('Ll', 'Lu')
 
 
 def mk_word_matcher(min=MIN, max=MAX, ascii=True):
     """
-    Make a word matcher function that accepts a word and returns
-    True or False depending on whether the word satisfies the
-    the constraints represented by the params.
+    Make word matcher function.
+
+    Returns a function that accepts a word and returns True or False depending
+    on whether the word satisfies the the constraints represented by
+    the params.
+
     :params:
      - min: minimum length of a word
      - max: maximum length of a word
@@ -94,19 +86,21 @@ def mk_word_matcher(min=MIN, max=MAX, ascii=True):
                 raise EncodingError(msg % (word, type(word)))
             length = len(word)
             return bool(length >= min and length <= max and
-                        all(imap(is_unicode_letter, word)))
+                        all(map(is_unicode_letter, word)))
     return matcher
 
 
 def get_words(path, min=MIN, max=MAX, ascii=True):
     """
-    Get sorted unique words with case normalized to lowercase from file at
-    given ``path``, filtering out words that are shorter than ``min`` or longer
-    than ``max``. If ``ascii`` is true (default), then only words containing
-    just ascii letters are returned. If ``ascii`` is false (and the python
-    installation has an appropriate default encoding for the given word file),
-    then words in the file that contain only unicode letters (according to
-    ``unicodedata.category``) will be included.
+    Get sorted unique words from word file.
+
+    Retrieves the sorted unique words with case normalized to lowercase from
+    file at given ``path``, filtering out words that are shorter than ``min``
+    or longer than ``max``. If ``ascii`` is true (default), then only words
+    containing just ascii letters are returned. If ``ascii`` is false (and the
+    python installation has an appropriate default encoding for the given word
+    file), then words in the file that contain only unicode letters (according
+    to ``unicodedata.category``) will be included.
     """
     matcher = mk_word_matcher(min=min, max=max, ascii=ascii)
     with open(path) as f:
@@ -120,8 +114,9 @@ def get_words(path, min=MIN, max=MAX, ascii=True):
 
 def sample_words(all_words, k, delim=DELIM, random_case=True):
     """
-    Sample ``k`` words from the ``all_words`` word sequence, using ``delim``
-    to join the words.
+    Sample ``k`` words from the ``all_words`` word sequence and join them.
+
+    The words are returned as a string joined using the ``delim`` str.
 
     If ``random_case`` is true (the default), then each word will
     with probability 0.5 be converted to title case, otherwise
@@ -194,9 +189,11 @@ def mkpassphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
 
 def num_possible(num_candidates, num_words):
     """
-    Calculate the number of possible word tuples containing ``num_words`` elems
-    that could be generated from ``num_candidates``, each of which
-    must be at least 1.
+    Calculate number of possible word tuples.
+
+    Answers the int number representing how many possible word tuples are
+    possible by choosing ``num_words`` elems from ``num_candidates``
+    (with replacement). Both args must be at least 1.
     """
     if num_candidates < 1:
         raise ValueError('num_candidates must be positive')

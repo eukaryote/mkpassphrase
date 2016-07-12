@@ -2,6 +2,12 @@
 Changes
 =======
 
+v0.9.1
+------
+
+ * minor adjustments to python2/3 compatibility checks
+ * pep257 docstring updates
+
 v0.9.0
 ------
 
