@@ -119,5 +119,6 @@ Use the `--help` option to see the available options:
 Supported Python Versions and Operating Systems
 -----------------------------------------------
 
-mkpassphrase is tested on py27, py33, py34, py35, py36, pypy, and pypy3 on
-Linux, but it should work on any OS that supports those Python versions.
+mkpassphrase runs under Python-2.7 as well as all Python-3 versions from 3.2.5
+up. It's tested only on Linux (CPython and PyPy), but it should work on
+any OS with a supported Python version.

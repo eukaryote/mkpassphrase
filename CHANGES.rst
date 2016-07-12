@@ -6,7 +6,7 @@ v1.0.0
 ----
 
  * 1.0 bump, and change to 'stable'
- * dropped support for python 3.0 - 3.2.*
+ * python3 support is limited to 3.2.5+ (python2.7 still supported)
  * added testing against python-3.6 (alpha3 currently)
 
 v0.9.1
