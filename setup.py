@@ -1,10 +1,16 @@
-import sys
 import os
+import sys
 
 from setuptools import setup
 from setuptools.command.test import test
 
 import mkpassphrase
+
+version = sys.version_info[:2]
+
+if version < (2, 7) or (version >= (3, 0) and version < (3, 3)):
+    print('mkpassphrase is only supported on python-2.7 and python-3.3+')
+    sys.exit(1)
 
 here_dir = os.path.abspath(os.path.dirname(__file__))
 
@@ -52,10 +58,13 @@ setup(
     },
     classifiers=[
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'License :: OSI Approved :: MIT License',
         'Environment :: Console',
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Topic :: Security',
         'Topic :: Utilities'
     ],

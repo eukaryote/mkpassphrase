@@ -2,10 +2,10 @@
 
 from __future__ import absolute_import, division, print_function
 
-import sys
-import os
-import math
 import argparse
+import math
+import os
+import sys
 
 import mkpassphrase as M
 

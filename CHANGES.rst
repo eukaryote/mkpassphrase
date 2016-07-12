@@ -2,6 +2,13 @@
 Changes
 =======
 
+v1.0.0
+----
+
+ * 1.0 bump, and change to 'stable'
+ * dropped support for python 3.0 - 3.2.*
+ * added testing against python-3.6 (alpha3 currently)
+
 v0.9.1
 ------
 

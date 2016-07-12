@@ -49,7 +49,37 @@ The security level reported is based only on the number of words in the
 passphrase and the number of possible words (as well as whether
 the ``--lowercase`` option is chosen), and does not include other factors
 such as padding or a custom delimiter, which would increase the security
-level.
+level. You can also add the ``-q`` option to only see the passphrases.
+
+If you find that your word file contains lots of words that you don't like,
+or you prefer to run ``mkpassphrase`` multiple times and find "nice" words
+among the multiple outputs, you can use the ``-t`` option to output multiple
+passphrases, like so:
+
+.. code-block:: shell-session
+
+  $ mkpassphrase -q -t 20
+  Feeding wane Fog walden modes
+  agave Rune Swapped lewd indore
+  Graces hire portal Brick mislay
+  Hobnob cellini Caducei Dinah bawdily
+  Succors lesley dungs noway scans
+  Jangles tipi Noses Tremors Antioch
+  Yuppy grasps praia Boor Argyle
+  Bleats Baste barks Chocked Funking
+  Kingpin Tsar guzman Reader pis
+  ledges fixity Foaling spreed quota
+  grid beside Egress aging Opinion
+  defrays limped magi Scabbed petards
+  Dustpan Kiddo Avid huddles Futures
+  frankly Diviner Midterm punker minuses
+  toys Tinfoil ramses Dingoes Lewdly
+  anion Cease Slovak Tadzhik limp
+  Encase soybean crusted lipids Jimmie
+  cuisine Wedding morns Rods upper
+  Grub octet pepys Condemn Reich
+  sappier massey Wrecker loudly horacio
+
 
 Options
 -------
@@ -89,5 +119,5 @@ Use the `--help` option to see the available options:
 Supported Python Versions and Operating Systems
 -----------------------------------------------
 
-mkpassphrase is tested under py27, py32, py33, py34, py35, pypy, and
-pypy3 on Linux, but should work on any OS that supports those Python versions.
+mkpassphrase is tested on py27, py33, py34, py35, py36, pypy, and pypy3 on
+Linux, but it should work on any OS that supports those Python versions.
