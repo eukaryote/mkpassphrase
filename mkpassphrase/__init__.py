@@ -10,13 +10,13 @@ import sys
 import types
 import unicodedata
 
-# use CSPRNG if possible
+# require CSPRNG
 try:
     os.urandom(1)
 except NotImplementedError:
-    print("WARNING: cryptographically secure pseudo-random number "
-          "generator not available")
-    RAND = _random
+    print("cryptographically secure pseudo-random "
+          "number generator not available")
+    raise
 else:
     RAND = _random.SystemRandom()
 

@@ -328,8 +328,8 @@ def test_csprng_unavailable():
     try:
         try:
             del sys.modules['mkpassphrase']
-            import mkpassphrase as M
-            assert M.RAND is _random, "should use non-CSPRNG impl"
+            with pytest.raises(NotImplementedError):
+                import mkpassphrase as M
         finally:
             if _urandom:
                 os.urandom = _urandom
