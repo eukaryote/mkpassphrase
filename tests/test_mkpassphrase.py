@@ -329,7 +329,7 @@ def test_csprng_unavailable():
         try:
             del sys.modules['mkpassphrase']
             import mkpassphrase as M
-            assert M.random is _random, "should use non-CSPRNG impl"
+            assert M.RAND is _random, "should use non-CSPRNG impl"
         finally:
             if _urandom:
                 os.urandom = _urandom
@@ -341,4 +341,4 @@ def test_csprng_unavailable():
             pass
         import mkpassphrase as M
         if _urandom:
-            assert isinstance(M.random, _random.SystemRandom)
+            assert isinstance(M.RAND, _random.SystemRandom)

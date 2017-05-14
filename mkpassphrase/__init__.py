@@ -16,9 +16,9 @@ try:
 except NotImplementedError:
     print("WARNING: cryptographically secure pseudo-random number "
           "generator not available")
-    random = _random
+    RAND = _random
 else:
-    random = _random.SystemRandom()
+    RAND = _random.SystemRandom()
 
 # python 2/3 compatibility workarounds
 if sys.version_info[0] >= 3:
@@ -123,10 +123,10 @@ def sample_words(all_words, k, delim=DELIM, random_case=True):
     the word is used unchanged as sampled from ``all_words``.
     """
     all_words = list(all_words)
-    words = random.sample(all_words, k)
+    words = RAND.sample(all_words, k)
     if random_case:
         for i, word in enumerate(words):
-            if random.choice((True, False)):
+            if RAND.choice((True, False)):
                 words[i] = word.title()
     return delim.join(words)
 
