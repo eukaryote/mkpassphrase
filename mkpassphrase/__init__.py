@@ -2,13 +2,16 @@
 
 from __future__ import absolute_import, division, print_function
 
+from contextlib import closing
 import functools
+import math
 import os
 import random as _random
-import re
 import sys
 import types
 import unicodedata
+
+import pkg_resources
 
 # require CSPRNG
 try:
@@ -37,12 +40,19 @@ __version__ = '.'.join(map(str, __version_info__))
 
 
 # defaults
-MIN = 3         # min word length
-MAX = 7         # max word length
-WORDS = 5       # num words
 PAD = ''        # prefix/suffix of passphrase
 DELIM = u(' ')  # delimiter
-WORD_FILE = '/usr/share/dict/words'
+
+# Default entropy bits to use for determining number of words to use
+ENTROPY_DEFAULT = 80
+
+WORD_LIST_DEFAULT = 'eff-large'
+
+WORD_LISTS = {
+    WORD_LIST_DEFAULT: 'eff_large_wordlist.txt',
+    'eff1': 'eff_short_wordlist_1.txt',
+    'eff2': 'eff_short_wordlist_2_0.txt',
+}
 
 
 class EncodingError(Exception):
@@ -54,62 +64,52 @@ def is_unicode_letter(char):
     return unicodedata.category(char) in ('Ll', 'Lu')
 
 
-def mk_word_matcher(min=MIN, max=MAX, ascii=True):
+def calculate_entropy(dict_size, num_words, random_case=False):
+    """Calculate entropy bits for ``num_words`` chosen from ``dict_size``."""
+    if random_case:
+        dict_size *= 2
+    return math.log(num_possible(dict_size, num_words), 2)
+
+
+def calculate_num_words(dict_size, entropy=None, random_case=False):
     """
-    Make word matcher function.
-
-    Returns a function that accepts a word and returns True or False depending
-    on whether the word satisfies the the constraints represented by
-    the params.
-
-    :params:
-     - min: minimum length of a word
-     - max: maximum length of a word
-     - ascii: whether to match words that contain only ascii letters
-              or words that contain only unicode letters (according to
-              ``unicodedata.category``).
+    Calculate number of words needed for given entropy drawn from dict size.
     """
-    if max < min:
-        msg = "min '%s' should be less than or equal to max '%s'"
-        raise ValueError(msg % (min, max))
-    if ascii:
-        pat = re.compile('^[a-zA-Z]{%s,%s}$' % (min, max))
+    if entropy is None:
+        entropy = ENTROPY_DEFAULT
 
-        def matcher(word):
-            return bool(pat.match(word))
-    else:
-
-        def matcher(word):
-            if not isinstance(word, u_type):
-                msg = ("Expected unicode words for ascii=False, but found "
-                       "word %r of type %s")
-                raise EncodingError(msg % (word, type(word)))
-            length = len(word)
-            return bool(length >= min and length <= max and
-                        all(map(is_unicode_letter, word)))
-    return matcher
+    n = 1
+    result_entropy = calculate_entropy(dict_size, n, random_case)
+    while result_entropy < entropy:
+        n += 1
+        result_entropy = calculate_entropy(dict_size, n, random_case)
+    return n, result_entropy
 
 
-def get_words(path, min=MIN, max=MAX, ascii=True):
-    """
-    Get sorted unique words from word file.
-
-    Retrieves the sorted unique words with case normalized to lowercase from
-    file at given ``path``, filtering out words that are shorter than ``min``
-    or longer than ``max``. If ``ascii`` is true (default), then only words
-    containing just ascii letters are returned. If ``ascii`` is false (and the
-    python installation has an appropriate default encoding for the given word
-    file), then words in the file that contain only unicode letters (according
-    to ``unicodedata.category``) will be included.
-    """
-    matcher = mk_word_matcher(min=min, max=max, ascii=ascii)
-    with open(path) as f:
-        words = (line.strip().lower() for line in f)
-        if not ascii:
-            words = (u(w) for w in words)
-        words = list(filter(matcher, set(words)))
+def load_from_stream(stream, test=None):
+    words = list(filter(test, (line.decode('utf8').strip().lower()
+                               for line in stream)))
+    if not words:
+        raise Exception("no words loaded")
     words.sort()
     return words
+
+
+def load_words_from_list(name):
+    filename = WORD_LISTS.get(name)
+    if not filename:
+        raise ValueError("Invalid wordlist: %s" % (name,))
+    path = 'wordlists/' + filename
+    with closing(pkg_resources.resource_stream('mkpassphrase', path)) as f:
+        return load_from_stream(f)
+
+
+def load_words_from_file(path):
+    """
+    Get sorted unique words from word file.
+    """
+    with open(path) as f:
+        return load_from_stream(f)
 
 
 def sample_words(all_words, k, delim=DELIM, random_case=True):
@@ -123,6 +123,8 @@ def sample_words(all_words, k, delim=DELIM, random_case=True):
     the word is used unchanged as sampled from ``all_words``.
     """
     all_words = list(all_words)
+    if k >= len(all_words):
+        raise ValueError("can't sample %d of %d words" % (k, len(all_words)))
     words = RAND.sample(all_words, k)
     if random_case:
         for i, word in enumerate(words):
@@ -131,25 +133,25 @@ def sample_words(all_words, k, delim=DELIM, random_case=True):
     return delim.join(words)
 
 
-def mkpassphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
-                 lowercase=False, ascii=True, delim=DELIM, pad=PAD, count=1):
+def mkpassphrase(word_list=None, word_file=None, entropy=None, num_words=None,
+                 random_case=True, delim=DELIM, pad=PAD, count=1):
     """
     Make one or more passphrases using given params.
 
     :params:
-    - path: path to a word file, one word per line, encoded with a character
-            encoding that is compatible with the python default encoding if
-            ``ascii`` is true.
-    - min: minimum length of each word in passphrase (at least 1, not greater
-           than ``max``).
-    - max: maximum length of each word in passphrase (at least 1, not less than
-           ``min``).
-    - num_words: number of words to include in passphrase (at least 1).
-    - lowercase: whether to keep initial letter of each word lowercased or
-                 capitalize it with probability 0.5.
-    - ascii: whether to only include words contain just ascii letters, or to
-             also include words that contain any unicode letter (but no
-             characters that are not unicode letters).
+    - word_list: name of a builtin wordlist ('eff-large', 'eff1', or 'eff2')
+    - word_file: path to a word file, one word per line, encoded with a
+            character encoding that is compatible with the python default
+            encoding if ``ascii`` is true.
+    - entropy: optional bits of entropy minimum that will be used to
+           calculate the number of words to use if ``num_words`` not provided,
+           or used to verify ``num_words`` is sufficient if both provided.
+    - num_words: number of words to include in passphrase (at least 1, if
+            provided). If not provided, the number will be calculated
+            based on the ``entropy`` (or default entropy if ``entropy``
+            not provide).
+    - random_case: whether to capitalize first letter of each word with
+             probability 0.5
     - delim: the delimiter to use for joining the words in the passphrase.
     - pad: a string to use as a prefix and suffix of the generated passphrase.
     - count: positive integer representing the number of passwords to generate,
@@ -159,32 +161,46 @@ def mkpassphrase(path=WORD_FILE, min=MIN, max=MAX, num_words=WORDS,
 
     :return:
     - passphrase: the generated passphrase (string) or list of passphrases
-    - num_candidates: the number of unique candidate words used to generate
-      the passphrase (int)
+    - entropy bits: entropy in bits of the generated passphrase(s)
     """
-    if min < 1:
-        raise ValueError("'min' must be at least 1")
-    if max < 1 or max < min:
-        raise ValueError("'max' must be positive and greater than"
-                         " or equal to 'min'")
-    if num_words < 1:
-        raise ValueError("'num_words' must be at least 1")
+    if not bool(word_file) ^ bool(word_list):
+        raise ValueError("exactly one of 'word_list' and "
+                         "'word_file' is required")
+    if num_words is not None and num_words < 1:
+        raise ValueError("'num_words' must be at least 1 if provided")
     if not isinstance(count, int) or count < 1:
         raise ValueError("'count' must be a positive int")
 
-    all_words = get_words(path, min=min, max=max, ascii=ascii)
+    words = (load_words_from_file(word_file) if word_file
+             else load_words_from_list(word_list))
+
+    # if num words not provided, we calculate how many to
+    # use based on entropy target provided (or default if not provided)
+    if num_words is None:
+        num_words, actual_entropy = calculate_num_words(
+            len(words),
+            entropy=entropy,
+            random_case=random_case,
+        )
+    else:
+        actual_entropy = calculate_entropy(
+            len(words),
+            num_words,
+            random_case,
+        )
+        if entropy is not None and actual_entropy < entropy:
+            msg = "entropy bits (%s) for %d words is less than %d"
+            msg %= (int(actual_entropy), num_words, entropy)
+            raise ValueError(msg)
+
     passphrases = []
-    for i in range(count):
-        passphrase = sample_words(all_words, num_words, delim=delim,
-                                  random_case=not lowercase)
+    for _ in range(count):
+        passphrase = sample_words(words, num_words, delim=delim,
+                                  random_case=random_case)
         passphrase = pad + passphrase + pad
         passphrases.append(passphrase)
 
-    num_candidates = len(all_words)
-    if not lowercase:
-        num_candidates *= 2
-
-    return (passphrases[0] if count == 1 else passphrases), num_candidates
+    return (passphrases[0] if count == 1 else passphrases), actual_entropy
 
 
 def num_possible(num_candidates, num_words):

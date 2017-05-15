@@ -48,6 +48,9 @@ setup(
     author='Calvin Smith',
     author_email='sapientdust+mkpassphrase@gmail.com',
     packages=[mkpassphrase.__name__],
+    package_data={
+        mkpassphrase.__name__: ['wordlists/*.txt'],
+    },
     platforms='any',
     cmdclass={'test': PyTest},
     tests_require=['pytest'],
