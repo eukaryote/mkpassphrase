@@ -9,14 +9,15 @@ import math
 import os
 import sys
 
-import mkpassphrase as M
+import mkpassphrase
+from mkpassphrase import api, internal
 
 
 def main(argv=None):
     """Command-line entry point."""
     if argv is None:
         argv = sys.argv
-    wordlists = sorted(M.WORD_LISTS)
+    wordlists = sorted(internal.WORD_LISTS)
     parser = argparse.ArgumentParser(description="Generate a passphrase.")
     parser.add_argument(
         "-n",
@@ -81,7 +82,7 @@ def main(argv=None):
 
     args = parser.parse_args()
     if args.version:
-        print("%s %s" % (M.__name__, M.__version__))
+        print("%s %s" % (mkpassphrase.__name__, mkpassphrase.__version__))
         sys.exit(0)
     if args.num_words is not None and args.num_words < 1:
         parser.exit("--num-words must be positive if provided")
@@ -96,9 +97,12 @@ def main(argv=None):
     quiet = params.pop("quiet", False)
     times = params.pop("times", 1)
     params.pop("version", None)
+
+    # use the default wordlist if no list or file was provided
     if not args.word_file and not args.word_list:
-        params["word_list"] = M.WORD_LIST_DEFAULT
-    passphrases, entropy = M.mkpassphrase(count=times, **params)
+        params["word_list"] = internal.WORD_LIST_DEFAULT
+
+    passphrases, entropy = api.mkpassphrase(count=times, **params)
     if times == 1:
         passphrases = [passphrases]
     for passphrase in passphrases:

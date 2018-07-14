@@ -26,8 +26,8 @@ else:
     RAND = _random.SystemRandom()
 
 # defaults
-PAD = ""  # prefix/suffix of passphrase
-DELIM = six.u(" ")  # delimiter
+PAD = six.u("")  # prefix/suffix of passphrase
+DELIMITER = six.u(" ")
 
 # Default entropy bits to use for determining number of words to use
 ENTROPY_DEFAULT = 80
@@ -98,11 +98,11 @@ def load_words_from_file(path):
         return load_from_stream(f)
 
 
-def sample_words(all_words, k, delim=DELIM, random_case=True):
+def sample_words(all_words, k, delimiter=DELIMITER, random_case=True):
     """
     Sample ``k`` words from the ``all_words`` word sequence and join them.
 
-    The words are returned as a string joined using the ``delim`` str.
+    The words are returned as a string joined using the ``delimiter`` str.
 
     If ``random_case`` is true (the default), then each word will
     with probability 0.5 be converted to title case, otherwise
@@ -116,7 +116,7 @@ def sample_words(all_words, k, delim=DELIM, random_case=True):
         for i, word in enumerate(words):
             if RAND.choice((True, False)):
                 words[i] = word.title()
-    return delim.join(words)
+    return delimiter.join(words)
 
 
 def num_possible(num_candidates, num_words):

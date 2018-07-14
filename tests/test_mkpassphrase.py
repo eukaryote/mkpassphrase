@@ -52,12 +52,12 @@ def test_words_fixture(words):
 def test_sample_words_len(words):
     k = 5
     assert len(words) > k
-    ws = api.sample_words(words, k)
-    assert len(ws.split(internal.DELIM)) == k
+    ws = internal.sample_words(words, k)
+    assert len(ws.split(internal.DELIMITER)) == k
 
 
 def test_sample_words_random_case(words):
-    def has_title_case(results, delim=internal.DELIM):
+    def has_title_case(results, delim=internal.DELIMITER):
         for ws in results:
             for w in ws.split(delim):
                 if w.title() == w:
@@ -85,14 +85,14 @@ def test_sample_words_unique(words):
 
     results = [internal.sample_words(words, k) for i in range(20)]
     for result in results:
-        ws = result.split(internal.DELIM)
+        ws = result.split(internal.DELIMITER)
         assert sorted(set(ws)) == sorted(ws)
 
 
 def test_sample_words_delim(words):
     k = 5
     delim = "_"
-    res = internal.sample_words(words, k, delim=delim)
+    res = internal.sample_words(words, k, delimiter=delim)
     assert res.count(delim) == k - 1
     regex = "^[^{delim}]+({delim}[^{delim}]+){{{n}}}"
     regex = regex.format(delim=delim, n=k - 1)
@@ -103,7 +103,7 @@ def test_mkpassword_defaults(word_file):
     assert internal.load_words_from_file(word_file)
     passphrase, entropy = api.mkpassphrase(word_file=word_file)
     assert entropy > 0
-    passphrase_words = passphrase.split(internal.DELIM)
+    passphrase_words = passphrase.split(internal.DELIMITER)
     assert len(passphrase_words) > 1
     for word in passphrase_words:
         assert passphrase.startswith(internal.PAD)
@@ -114,7 +114,7 @@ def test_mkpassword_delim(word_file):
     delim = "^"
     num_words = 10
     passphrase, _ = api.mkpassphrase(
-        word_file=word_file, delim=delim, num_words=num_words
+        word_file=word_file, delimiter=delim, num_words=num_words
     )
     assert delim in passphrase
     assert len(passphrase.split(delim)) == num_words
