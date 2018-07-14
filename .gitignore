@@ -8,3 +8,4 @@ dist
 .eggs
 .coverage
 .coverage.*
+.pytest_cache

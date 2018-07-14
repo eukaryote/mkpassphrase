@@ -1,7 +1,6 @@
 # coding=utf-8
 
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function
 
 import codecs
 import os
@@ -10,42 +9,39 @@ import tempfile
 import re
 import random as _random
 
+import six
+from six.moves import reduce
+
 import pytest
 
-import mkpassphrase as M
+from mkpassphrase import api, internal
 
 from tests import test_words
-
-try:
-    reduce
-except NameError:
-    import functools
-    reduce = functools.reduce
 
 
 @pytest.fixture
 def word_file(request):
     tmp = tempfile.mktemp()
     request.addfinalizer(lambda: os.remove(tmp))
-    with codecs.open(tmp, 'w', 'utf-8') as f:
+    with codecs.open(tmp, "w", "utf-8") as f:
         for word in test_words:
             f.write(word)
-            f.write('\n')
+            f.write("\n")
     return tmp
 
 
 @pytest.fixture
 def words(word_file):
-    with codecs.open(word_file, 'r', 'utf-8') as f:
-        return list(filter(None, f.read().split('\n')))
+    with codecs.open(word_file, "r", "utf-8") as f:
+        return list(filter(None, f.read().split("\n")))
 
 
 # sanity check fixtures, to be sure tests are testing what they think they are
 def test_word_file_fixture(word_file):
     assert os.access(word_file, os.R_OK)
-    with codecs.open(word_file, 'r', 'utf-8') as f:
+    with codecs.open(word_file, "r", "utf-8") as f:
         result = f.read().strip()
-    expected = u'\n'.join(test_words)
+    expected = "\n".join(test_words)
     assert result == expected
 
 
@@ -56,13 +52,12 @@ def test_words_fixture(words):
 def test_sample_words_len(words):
     k = 5
     assert len(words) > k
-    ws = M.sample_words(words, k)
-    assert len(ws.split(M.DELIM)) == k
+    ws = api.sample_words(words, k)
+    assert len(ws.split(internal.DELIM)) == k
 
 
 def test_sample_words_random_case(words):
-
-    def has_title_case(results, delim=M.DELIM):
+    def has_title_case(results, delim=internal.DELIM):
         for ws in results:
             for w in ws.split(delim):
                 if w.title() == w:
@@ -73,13 +68,13 @@ def test_sample_words_random_case(words):
     assert len(words) > k
 
     # verify default (True)
-    results = [M.sample_words(words, k) for i in range(10)]
+    results = [internal.sample_words(words, k) for i in range(10)]
     assert has_title_case(results)
 
     # verify False
     words = [w.lower() for w in words]
-    words = [w for w in words if re.match('^[a-z]+$', w)]
-    results = [M.sample_words(words, k, random_case=False) for i in range(10)]
+    words = [w for w in words if re.match("^[a-z]+$", w)]
+    results = [internal.sample_words(words, k, random_case=False) for i in range(10)]
     assert not has_title_case(results)
 
 
@@ -88,77 +83,78 @@ def test_sample_words_unique(words):
     # normalize for testing purposes below
     words = list(set([w.lower() for w in words]))
 
-    results = [M.sample_words(words, k) for i in range(20)]
+    results = [internal.sample_words(words, k) for i in range(20)]
     for result in results:
-        ws = result.split(M.DELIM)
+        ws = result.split(internal.DELIM)
         assert sorted(set(ws)) == sorted(ws)
 
 
 def test_sample_words_delim(words):
     k = 5
-    delim = '_'
-    res = M.sample_words(words, k, delim=delim)
+    delim = "_"
+    res = internal.sample_words(words, k, delim=delim)
     assert res.count(delim) == k - 1
-    regex = '^[^{delim}]+({delim}[^{delim}]+){{{n}}}'
+    regex = "^[^{delim}]+({delim}[^{delim}]+){{{n}}}"
     regex = regex.format(delim=delim, n=k - 1)
     assert re.match(regex, res)
 
 
 def test_mkpassword_defaults(word_file):
-    assert M.load_words_from_file(word_file)
-    passphrase, entropy = M.mkpassphrase(word_file=word_file)
+    assert internal.load_words_from_file(word_file)
+    passphrase, entropy = api.mkpassphrase(word_file=word_file)
     assert entropy > 0
-    passphrase_words = passphrase.split(M.DELIM)
+    passphrase_words = passphrase.split(internal.DELIM)
     assert len(passphrase_words) > 1
     for word in passphrase_words:
-        assert passphrase.startswith(M.PAD)
-        assert passphrase.endswith(M.PAD)
+        assert passphrase.startswith(internal.PAD)
+        assert passphrase.endswith(internal.PAD)
 
 
 def test_mkpassword_delim(word_file):
-    delim = '^'
+    delim = "^"
     num_words = 10
-    passphrase, _ = M.mkpassphrase(word_file=word_file, delim=delim,
-                                   num_words=num_words)
+    passphrase, _ = api.mkpassphrase(
+        word_file=word_file, delim=delim, num_words=num_words
+    )
     assert delim in passphrase
     assert len(passphrase.split(delim)) == num_words
 
 
 def test_mkpassword_pad(word_file):
-    pad = '//'
-    passphrase, _ = M.mkpassphrase(word_file=word_file, pad=pad)
+    pad = "//"
+    passphrase, _ = api.mkpassphrase(word_file=word_file, pad=pad)
     assert passphrase.startswith(pad)
     assert passphrase.endswith(pad)
 
 
 def test_mkpassphrase_count_default(word_file):
-    result, _ = M.mkpassphrase(word_file=word_file)
-    assert isinstance(result, M.u_type)
-    result, _ = M.mkpassphrase(word_file=word_file, count=1)
-    assert isinstance(result, M.u_type)
+    result, _ = api.mkpassphrase(word_file=word_file)
+    assert isinstance(result, six.text_type)
+    result, _ = api.mkpassphrase(word_file=word_file, count=1)
+    assert isinstance(result, six.text_type)
 
 
-@pytest.mark.parametrize('count', list(range(2, 6)))
+@pytest.mark.parametrize("count", list(range(2, 6)))
 def test_mkpassphrase_count_multiple(word_file, count):
-    passphrases, _ = M.mkpassphrase(word_file=word_file, count=count)
+    passphrases, _ = api.mkpassphrase(word_file=word_file, count=count)
     assert isinstance(passphrases, list)
-    assert isinstance(passphrases[0], M.u_type)
+    assert isinstance(passphrases[0], six.text_type)
     assert len(set(passphrases)) == len(passphrases)
 
 
 def test_num_possible():
-    assert M.num_possible(10, 1) == 10
-    assert M.num_possible(10, 2) == 10 * 9
-    assert M.num_possible(10, 9) == reduce(lambda a, b: a * b, range(1, 11))
+    assert internal.num_possible(10, 1) == 10
+    assert internal.num_possible(10, 2) == 10 * 9
+    assert internal.num_possible(10, 9) == reduce(lambda a, b: a * b, range(1, 11))
 
     with pytest.raises(ValueError):
-        M.num_possible(0, 1)
+        internal.num_possible(0, 1)
 
     with pytest.raises(ValueError):
-        M.num_possible(1, 0)
+        internal.num_possible(1, 0)
 
 
-def test_csprng_unavailable():
+def test_csprng_unavailable(capsys):
     # patch os.urandom so it behaves as if not implemented, if needed
     _urandom = None
     try:
@@ -170,23 +166,29 @@ def test_csprng_unavailable():
 
         def fail(n):
             raise NotImplementedError()
+
         os.urandom = fail
 
     # reimport to test module initialization logic when urandom not implemented
     try:
         try:
-            del sys.modules['mkpassphrase']
+            sys.modules.pop("mkpassphrase", None)
+            sys.modules.pop("mkpassphrase.internal", None)
             with pytest.raises(NotImplementedError):
-                import mkpassphrase as M
+                import mkpassphrase.internal  # noqa
+            out, err = capsys.readouterr()
+            assert "not available" in err
         finally:
             if _urandom:
                 os.urandom = _urandom
     finally:
         # undo the patch
         try:
-            del sys.modules['mkpassphrase']
+            sys.modules.pop("mkpassphrase", None)
+            sys.modules.pop("mkpassphrase.internal", None)
         except KeyError:
             pass
-        import mkpassphrase as M
+        import mkpassphrase.internal as I2
+
         if _urandom:
-            assert isinstance(M.RAND, _random.SystemRandom)
+            assert isinstance(I2.RAND, _random.SystemRandom)
