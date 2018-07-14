@@ -24,10 +24,18 @@ def main(argv=None):
         "--num-words",
         type=int,
         metavar="NUM_WORDS",
-        help="Number of words in passphrase",
+        help="Number of words in passphrase "
+        "(the default is enough words to reach a security level of {} bits)".format(
+            internal.ENTROPY_DEFAULT
+        ),
     )
     parser.add_argument(
-        "-s", "--entropy", type=int, metavar="ENTROPY", help="Target entropy bits"
+        "-s",
+        "--entropy",
+        type=int,
+        metavar="ENTROPY",
+        help="Target entropy bits "
+        "(the default is {} bits)".format(internal.ENTROPY_DEFAULT),
     )
     parser.add_argument(
         "-w",
@@ -35,7 +43,7 @@ def main(argv=None):
         type=str,
         metavar="WORD_LIST",
         choices=wordlists,
-        help="Use built-in wordlist",
+        help="Use built-in wordlist (eff-large [default], eff1, or eff2)",
     )
     parser.add_argument(
         "-f",
@@ -45,26 +53,31 @@ def main(argv=None):
         help="Word file path (one word per line)",
     )
     parser.add_argument(
-        "-r",
-        "--random-case",
-        action="store_true",
+        "-l",
+        "--lowercase",
+        action="store_false",
         dest="random_case",
-        help="Capitalize first character of each word " "with probability 0.5",
+        default=True,
+        help="Lowercase words (the default is to capitalize the first letter"
+        "of each word with probability 0.5 and use lowercase "
+        "for all other letters)",
     )
     parser.add_argument(
         "-p",
         "--pad",
         metavar="PAD",
         default="",
-        help="Pad passphrase using PAD as prefix and suffix",
+        help="Pad passphrase using PAD as prefix and suffix "
+        "(the default is no padding)",
     )
     parser.add_argument(
         "-d",
         "--delimiter",
         dest="delimiter",
         default=" ",
-        metavar="DELIM",
-        help="Use DELIM to separate words in passphrase",
+        metavar="DELIMITER",
+        help="Use DELIMITER to separate words in passphrase "
+        "(the default is a space character)",
     )
     parser.add_argument(
         "-t",
@@ -73,11 +86,16 @@ def main(argv=None):
         type=int,
         default=1,
         metavar="TIMES",
-        help="Generate TIMES different " "passphrases",
+        help="Generate TIMES different passphrases "
+        "(the default is to generate 1 passphrase)",
     )
     parser.add_argument("-V", "--version", action="store_true", help="Show version")
     parser.add_argument(
-        "-q", "--quiet", action="store_true", help="Print just the passphrase"
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="Print just the passphrase (the default "
+        "is to also show the security-level of the generated passphrase(s))",
     )
 
     args = parser.parse_args()

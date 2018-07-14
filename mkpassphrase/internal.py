@@ -50,14 +50,14 @@ def is_unicode_letter(char):
     return unicodedata.category(char) in ("Ll", "Lu")
 
 
-def calculate_entropy(dict_size, num_words, random_case=False):
+def calculate_entropy(dict_size, num_words, random_case=True):
     """Calculate entropy bits for ``num_words`` chosen from ``dict_size``."""
     if random_case:
         dict_size *= 2
     return math.log(num_possible(dict_size, num_words), 2)
 
 
-def calculate_num_words(dict_size, entropy=None, random_case=False):
+def calculate_num_words(dict_size, entropy=None, random_case=True):
     """
     Calculate number of words needed for given entropy drawn from dict size.
     """
