@@ -4,6 +4,8 @@ python:
   - "3.3"
   - "3.4"
   - "3.5"
+  - "3.6"
+  - "3.7dev"
   - "pypy"
   - "pypy3"
 
@@ -12,7 +14,7 @@ install:
   - pip install pytest-flake8 pytest-pep257
   - pip install .
 # command to run tests
-script: py.test --flake8 --pep257 -s tests
+script: pytest --flake8 --pep257 -s tests
 branches:
   only:
     - master
