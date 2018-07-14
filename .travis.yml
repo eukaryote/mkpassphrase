@@ -18,3 +18,4 @@ script: pytest --flake8 --pep257 -s tests
 branches:
   only:
     - master
+    - wordlists
