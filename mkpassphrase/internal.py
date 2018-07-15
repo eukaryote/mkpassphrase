@@ -7,7 +7,6 @@ import math
 import os
 import random as _random
 import sys
-import unicodedata
 
 import pkg_resources
 
@@ -45,9 +44,26 @@ class EncodingError(Exception):
     """Encoding error procesing word file."""
 
 
-def is_unicode_letter(char):
-    """Answer whether given unicode character is a letter."""
-    return unicodedata.category(char) in ("Ll", "Lu")
+def num_possible(num_candidates, num_words):
+    """
+    Calculate number of possible word tuples.
+
+    Answers the int number representing how many possible word tuples are
+    possible by choosing ``num_words`` elems from ``num_candidates``
+    (with replacement). Both args must be at least 1.
+    """
+    if num_candidates < 1:
+        raise ValueError("num_candidates must be positive")
+    if num_words < 1:
+        raise ValueError("num_words must be positive")
+
+    n, k = num_candidates, num_words
+    possible = 1
+    while k > 0:
+        possible *= n
+        n -= 1
+        k -= 1
+    return possible
 
 
 def calculate_entropy(dict_size, num_words, random_case=True):
@@ -73,9 +89,9 @@ def calculate_num_words(dict_size, entropy=None, random_case=True):
 
 
 def load_from_stream(stream, test=None):
-    words = list(filter(test, (line.strip().lower() for line in stream)))
+    words = list(set(filter(test, (line.strip().lower() for line in stream))))
     if not words:
-        raise Exception("no words loaded")
+        raise RuntimeError("no words loaded")
     words.sort()
     return words
 
@@ -109,7 +125,7 @@ def sample_words(all_words, k, delimiter=DELIMITER, random_case=True):
     the word is used unchanged as sampled from ``all_words``.
     """
     all_words = list(all_words)
-    if k >= len(all_words):
+    if k > len(all_words):
         raise ValueError("can't sample %d of %d words" % (k, len(all_words)))
     words = RAND.sample(all_words, k)
     if random_case:
@@ -117,25 +133,3 @@ def sample_words(all_words, k, delimiter=DELIMITER, random_case=True):
             if RAND.choice((True, False)):
                 words[i] = word.title()
     return delimiter.join(words)
-
-
-def num_possible(num_candidates, num_words):
-    """
-    Calculate number of possible word tuples.
-
-    Answers the int number representing how many possible word tuples are
-    possible by choosing ``num_words`` elems from ``num_candidates``
-    (with replacement). Both args must be at least 1.
-    """
-    if num_candidates < 1:
-        raise ValueError("num_candidates must be positive")
-    if num_words < 1:
-        raise ValueError("num_words must be positive")
-
-    n, k = num_candidates, num_words
-    possible = 1
-    while k > 0:
-        possible *= n
-        n -= 1
-        k -= 1
-    return possible

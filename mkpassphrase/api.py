@@ -45,10 +45,10 @@ def mkpassphrase(
     """
     if not bool(word_file) ^ bool(word_list):
         raise ValueError("exactly one of 'word_list' or " "'word_file' is required")
-    if num_words is not None and num_words < 1:
-        raise ValueError("'num_words' must be at least 1 if provided")
+    if num_words is not None and (not isinstance(num_words, int) or num_words < 1):
+        raise ValueError("'num_words' must be a positive integer if provided")
     if not isinstance(count, int) or count < 1:
-        raise ValueError("'count' must be a positive int")
+        raise ValueError("'count' must be a positive integer")
 
     load, src = (
         (internal.load_words_from_file, word_file)

@@ -9,14 +9,12 @@ import math
 import os
 import sys
 
-import mkpassphrase
-from mkpassphrase import api, internal
 
-
-def main(argv=None):
+def main():
     """Command-line entry point."""
-    if argv is None:
-        argv = sys.argv
+    import mkpassphrase as MP
+    from mkpassphrase import api, internal
+
     wordlists = sorted(internal.WORD_LISTS)
     parser = argparse.ArgumentParser(description="Generate a passphrase.")
     parser.add_argument(
@@ -81,7 +79,7 @@ def main(argv=None):
     )
     parser.add_argument(
         "-t",
-        "--items",
+        "--times",
         dest="times",
         type=int,
         default=1,
@@ -100,12 +98,12 @@ def main(argv=None):
 
     args = parser.parse_args()
     if args.version:
-        print("%s %s" % (mkpassphrase.__name__, mkpassphrase.__version__))
+        print("%s %s" % (MP.__name__, MP.__version__))
         sys.exit(0)
     if args.num_words is not None and args.num_words < 1:
         parser.exit("--num-words must be positive if provided")
     if args.times < 1:
-        parser.exit("--times must be positive")
+        parser.exit("--times must be positive if provided")
     if args.word_list and args.word_file:
         parser.exit("only one of --word-list and --word-file is allowed")
     if args.word_file and not os.access(args.word_file, os.R_OK):
