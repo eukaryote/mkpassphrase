@@ -1,3 +1,4 @@
+sudo: false
 language: python
 python:
   - "2.7"
@@ -11,10 +12,9 @@ python:
 
 # command to install dependencies
 install:
-  - pip install pytest-flake8 pytest-pep257
-  - pip install .
+  - pip install tox-travis .
 # command to run tests
-script: pytest --flake8 --pep257 -s tests
+script: tox
 branches:
   only:
     - master
