@@ -17,4 +17,3 @@ script: tox
 branches:
   only:
     - master
-    - wordlists
