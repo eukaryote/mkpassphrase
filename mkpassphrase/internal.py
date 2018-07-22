@@ -17,7 +17,7 @@ try:
     os.urandom(1)
 except NotImplementedError:
     six.print_(
-        "cryptographically secure pseudo-random " "number generator not available",
+        "cryptographically secure pseudo-random number generator not available",
         file=sys.stderr,
     )
     raise
@@ -33,6 +33,12 @@ ENTROPY_DEFAULT = 80
 
 WORD_LIST_DEFAULT = "eff-large"
 
+# Map from wordlist name to filename. The three EFF files are as follows:
+
+# WORD_LIST_DEFAULT: 7,776 words, average 7.0 chars in length;
+# eff1: 1,296 (6**4) most memorable and distinct words;
+# eff2: 1,296 (6**4) words that all have a unique three-character prefix
+#   and an edit distance of at least three from any other word in the list.
 WORD_LISTS = {
     WORD_LIST_DEFAULT: "eff_large_wordlist.txt",
     "eff1": "eff_short_wordlist_1.txt",
