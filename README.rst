@@ -126,5 +126,5 @@ Supported Python Versions and Operating Systems
 -----------------------------------------------
 
 mkpassphrase is supported on Python-2.7 (CPython or PyPy), Python-3.4+ for
-CPython, and Python-3.2.5+ for PyPy. It is tested on Linux, but should work on
+CPython, and Python-3.5+ for PyPy. It is tested on Linux, but should work on
 any OS with a supported Python version.

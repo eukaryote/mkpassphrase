@@ -8,9 +8,9 @@ import mkpassphrase
 
 version = sys.version_info[:3]
 
-if version < (2, 7, 0) or (version >= (3, 0, 0) and version < (3, 2, 5)):
+if version < (2, 7, 0) or (version >= (3, 0, 0) and version < (3, 4, 0)):
     print("Unsupported Python version: %s" % sys.version_info)
-    print("mkpassphrase is supported on python-2.7 and python-3.2.5+")
+    print("mkpassphrase is supported on python-2.7 and python-3.4+")
     sys.exit(1)
 
 here_dir = os.path.abspath(os.path.dirname(__file__))
@@ -66,8 +66,6 @@ setup(
     },
     classifiers=[
         "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.2",
-        "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
