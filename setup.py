@@ -56,7 +56,7 @@ setup(
     tests_require=["six", "pytest"],
     test_suite="tests",
     extras_require={
-        "testing": ["pytest", "mock", "pytest-cov", "pytest-pyflake8"],
+        "testing": ["pytest", "mock", "pytest-flake8", "pytest-pep257", "pytest-cov"],
         "develop": ["wheel"],
     },
     entry_points={
