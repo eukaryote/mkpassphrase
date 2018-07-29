@@ -3,6 +3,13 @@ Changes
 =======
 
 
+v3.0.0
+------
+
+ * dropped support for python3 before 3.5, so supported versions are
+   Python 2.7 and Python 3.5+ for both CPython and PyPy
+
+
 v2.0.0.post1
 ------------
 
