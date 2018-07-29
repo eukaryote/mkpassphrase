@@ -2,6 +2,29 @@
 Changes
 =======
 
+
+v2.0.0.post1
+------------
+
+ * update CHANGES to reflect 2.0.0 changes (no code changes compared v2.0.0)
+
+
+v2.0.0
+------
+
+ * support using (bundled) `EFF wordlists`_ as the source for words, in addition to
+   user-provided wordlists, with the default behavior now being to use the
+   long EFF wordlist (7,776 words)
+ * support specifying security level to get a passphrase with the required number of
+   words for that security level (e.g., `mkpassphrase -s 80` to get a passphrase
+   with enough words from the default EFF wordlist for 80 bits of entropy)
+ * removed `--min` and `--max` options for ignoring words in a wordlist that are
+   too short or too long
+ * removed `--non-ascii` option for ignoring words that have non-ascii characters
+
+.. _EFF wordlists: https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases
+
+
 v1.0.0
 ------
 
