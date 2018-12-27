@@ -1,18 +1,13 @@
-sudo: false
+dist: xenial
 language: python
 python:
   - "2.7"
   - "3.5"
   - "3.6"
-  - "3.7-dev"
-  - "pypy"
-  - "pypy3"
+  - "3.7"
+  - "pypy3.5"
 
-# command to install dependencies
 install:
-  - pip install pip==18.0 tox-travis .
-# command to run tests
-script: tox
-branches:
-  only:
-    - master
+  - pip install pip==18.1
+  - pip install -U -r requirements.txt -r requirements.test.txt .
+script: pytest -c pytest.full.ini
