@@ -9,5 +9,5 @@ python:
 
 install:
   - pip install pip==18.1
-  - pip install -r requirements.txt -r requirements.test.txt .
+  - pip install -U -r requirements.txt -r requirements.test.txt .
 script: pytest -c pytest.full.ini
